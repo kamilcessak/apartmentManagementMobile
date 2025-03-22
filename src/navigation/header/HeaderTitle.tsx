@@ -1,10 +1,16 @@
-import React from "react";
-import { Text, View } from "react-native";
+import React, { FC } from "react";
+import { View } from "react-native";
+import { Text } from "react-native-paper";
 
-export const HeaderTitle = () => {
+type Props = {
+  children: string;
+  tintColor?: string;
+};
+
+export const HeaderTitle: FC<Props> = ({ children }) => {
   return (
     <View>
-      <Text>Hejka naklejka</Text>
+      <Text variant="titleLarge">{children}</Text>
     </View>
   );
 };

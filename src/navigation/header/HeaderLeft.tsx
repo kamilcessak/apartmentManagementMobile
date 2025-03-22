@@ -1,10 +1,19 @@
 import React from "react";
 import { View } from "react-native";
+import { IconButton } from "react-native-paper";
 
 export const HeaderLeft = () => {
   return (
-    <View>
-      <View style={{ width: 20, height: 20, backgroundColor: "red" }} />
+    <View style={{ top: -8 }}>
+      <IconButton
+        icon="chevron-left"
+        size={32}
+        onPress={() => {}}
+        style={{
+          padding: 0,
+          margin: 0,
+        }}
+      />
     </View>
   );
 };
