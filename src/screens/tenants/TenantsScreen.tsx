@@ -1,10 +1,10 @@
-import React, { useCallback } from "react";
-import { View, Text } from "react-native";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useCallback } from "react";
+import { Text, View } from "react-native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 
 import { HeaderTitle } from "@navigation/header";
 
-export const HomeScreen = () => {
+export const TenantsScreen = () => {
   const navigation = useNavigation();
 
   useFocusEffect(
@@ -18,7 +18,7 @@ export const HomeScreen = () => {
 
       if (parent) {
         parent.setOptions({
-          headerTitle: () => <HeaderTitle children="Strona główna" />,
+          headerTitle: () => <HeaderTitle children="Twoi najemcy" />,
         });
       }
     }, [])
@@ -26,7 +26,7 @@ export const HomeScreen = () => {
 
   return (
     <View>
-      <Text>Hejka naklejka</Text>
+      <Text>Tenants</Text>
     </View>
   );
 };

@@ -7,10 +7,8 @@ type Props = {
   tintColor?: string;
 };
 
-export const HeaderTitle: FC<Props> = ({ children }) => {
-  return (
-    <View>
-      <Text variant="titleLarge">{children}</Text>
-    </View>
-  );
-};
+export const HeaderTitle: FC<Props> = ({ children }) => (
+  <View>
+    <Text variant="titleLarge">{children}</Text>
+  </View>
+);
