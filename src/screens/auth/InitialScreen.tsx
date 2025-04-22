@@ -1,16 +1,67 @@
-import { Button, Text, View } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { View, Image } from "react-native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useCallback, useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Button, Text } from "react-native-paper";
+
+import { HeaderTitle } from "@navigation/header";
 
 export const InitialScreen = () => {
   const navigation = useNavigation();
 
+  useFocusEffect(
+    useCallback(() => {
+      let parent = navigation;
+      while (parent && parent.getParent) {
+        const newParent = parent.getParent();
+        if (!newParent) break;
+        parent = newParent;
+      }
+
+      if (parent) {
+        parent.setOptions({
+          headerTitle: () => <HeaderTitle children="Apartment Management" />,
+        });
+      }
+    }, [])
+  );
+
+  const getToken = async () => {
+    const token = await AsyncStorage.getItem("token");
+    if (token?.length) {
+      navigation.replace("AuthenticatedStack");
+    }
+  };
+
+  useEffect(() => {
+    void getToken();
+  }, []);
+
   return (
-    <View>
-      <Text>Initial</Text>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: "white",
+        padding: 16,
+        alignItems: "center",
+        width: "100%",
+        paddingTop: 64,
+      }}
+    >
+      <Text variant="displaySmall">Witaj w aplikacji</Text>
+      <View style={{ alignItems: "center", paddingVertical: 32 }}>
+        <Image
+          source={require("@assets/images/logo.png")}
+          style={{ width: 128, height: 128, borderRadius: 128 }}
+        />
+      </View>
       <Button
-        title="Go to auth"
-        onPress={() => navigation.replace("AuthenticatedStack")}
-      />
+        mode="outlined"
+        style={{ width: "100%" }}
+        onPress={() => navigation.navigate("SignInScreen")}
+      >
+        Zaloguj się
+      </Button>
     </View>
   );
 };

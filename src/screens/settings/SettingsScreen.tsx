@@ -3,6 +3,8 @@ import { useCallback } from "react";
 import { Text, View } from "react-native";
 
 import { HeaderTitle } from "@navigation/header";
+import { Button } from "react-native-paper";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const SettingsScreen = () => {
   const navigation = useNavigation();
@@ -24,9 +26,17 @@ export const SettingsScreen = () => {
     }, [])
   );
 
+  const signOut = () => {
+    AsyncStorage.setItem("token", "");
+    navigation.replace("UnauthenticatedStack");
+  };
+
   return (
     <View>
       <Text>Ustawienia</Text>
+      <Button mode="outlined" onPress={signOut}>
+        Wyloguj
+      </Button>
     </View>
   );
 };
