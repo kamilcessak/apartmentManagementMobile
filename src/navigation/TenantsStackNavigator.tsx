@@ -1,7 +1,11 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import { TenantsScreen } from "@screens/tenants";
+import {
+  NewTenantScreen,
+  TenantDetailsScreen,
+  TenantsScreen,
+} from "@screens/tenants";
 
 const Stack = createNativeStackNavigator();
 
@@ -11,5 +15,7 @@ export const TenantsStackNavigator = () => (
     screenOptions={{ headerShown: false }}
   >
     <Stack.Screen name="Tenants" component={TenantsScreen} />
+    <Stack.Screen name="NewTenant" component={NewTenantScreen} />
+    <Stack.Screen name="TenantDetails" component={TenantDetailsScreen} />
   </Stack.Navigator>
 );

@@ -11,15 +11,16 @@ export const HeaderLeft = (props) => {
   }
 
   return (
-    <View style={{ top: -8 }}>
+    <View style={{ top: 0 }}>
       <IconButton
         icon="chevron-left"
         size={32}
-        onPress={goBack}
+        onPress={props?.goBack || goBack}
         style={{
           padding: 0,
           margin: 0,
         }}
+        rippleColor="transparent"
       />
     </View>
   );
