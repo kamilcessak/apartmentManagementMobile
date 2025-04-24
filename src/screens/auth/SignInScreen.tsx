@@ -4,7 +4,6 @@ import { useMutation } from "@tanstack/react-query";
 import { useCallback } from "react";
 import Toast from "react-native-toast-message";
 import { useHeaderHeight } from "@react-navigation/elements";
-import axios from "axios";
 import { TextInput, Button } from "react-native-paper";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -12,6 +11,7 @@ import { useForm } from "react-hook-form";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { HeaderTitle } from "@navigation/header";
+import { handleLogin } from "@services/auth";
 
 const schema = yup.object().shape({
   email: yup.string().required("Email is required"),
@@ -52,27 +52,21 @@ export const SignInScreen = () => {
     }, [])
   );
 
-  const handleLogin = async (data: FormValues) => {
-    try {
-      const response = axios.post("http://localhost:5050/login", data);
-      return response;
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   const { mutate, isPending } = useMutation({
     mutationFn: handleLogin,
     onSuccess: async (data) => {
       if (data?.data.token) {
         await AsyncStorage.setItem("token", data.data.token);
+        const isLandlord = data.data.user.role === "Landlord";
         Toast.show({
           type: "success",
           text1: "Pomyślnie zalogowano do konta!",
           topOffset: headerHeight + 16,
           onPress: () => Toast.hide(),
         });
-        navigation.replace("AuthenticatedStack");
+        navigation.replace(
+          isLandlord ? "AuthenticatedLandlordStack" : "AuthenticatedTenantStack"
+        );
       } else {
         alert("Login failed");
       }
@@ -116,6 +110,7 @@ export const SignInScreen = () => {
         <TextInput
           mode="outlined"
           label="Hasło"
+          secureTextEntry
           onChangeText={(value: string) => setValue("password", value)}
           error={!!errors.password}
         />

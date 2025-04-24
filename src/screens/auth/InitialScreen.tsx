@@ -5,9 +5,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Button, Text } from "react-native-paper";
 
 import { HeaderTitle } from "@navigation/header";
+import { useUserData } from "@hooks/useUserData";
 
 export const InitialScreen = () => {
   const navigation = useNavigation();
+  const { data, isLoading } = useUserData();
 
   useFocusEffect(
     useCallback(() => {
@@ -28,14 +30,18 @@ export const InitialScreen = () => {
 
   const getToken = async () => {
     const token = await AsyncStorage.getItem("token");
-    if (token?.length) {
-      navigation.replace("AuthenticatedStack");
+    if (token?.length && Object.keys(data)?.length) {
+      navigation.replace(
+        data.role === "Landlord"
+          ? "AuthenticatedLandlordStack"
+          : "AuthenticatedTenantStack"
+      );
     }
   };
 
   useEffect(() => {
     void getToken();
-  }, []);
+  }, [isLoading]);
 
   return (
     <View

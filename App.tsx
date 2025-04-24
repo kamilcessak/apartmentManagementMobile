@@ -7,8 +7,12 @@ import Toast from "react-native-toast-message";
 
 import { HeaderLeft, HeaderTitle, HeaderRight } from "@navigation/header";
 import { theme } from "@styles/theme";
-import { UnauthenticatedStackNavigator } from "@navigation/index";
-import { AuthenticatedStackNavigator } from "@navigation/AuthenticatedStackNavigator";
+import {
+  AuthenticatedLandlordStackNavigator,
+  AuthenticatedTenantStackNavigator,
+  UnauthenticatedStackNavigator,
+} from "@navigation/index";
+import { AppProvider } from "src/contexts/AppContext";
 
 const Stack = createNativeStackNavigator();
 const queryClient = new QueryClient();
@@ -17,26 +21,32 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <PaperProvider theme={theme}>
-        <NavigationContainer>
-          <Stack.Navigator
-            initialRouteName={"UnauthenticatedStack"}
-            screenOptions={{
-              headerTitle: (props) => <HeaderTitle {...props} />,
-              headerLeft: (props) => <HeaderLeft {...props} />,
-              headerRight: (props) => <HeaderRight {...props} />,
-            }}
-          >
-            <Stack.Screen
-              name="AuthenticatedStack"
-              component={AuthenticatedStackNavigator}
-            />
-            <Stack.Screen
-              name="UnauthenticatedStack"
-              component={UnauthenticatedStackNavigator}
-            />
-          </Stack.Navigator>
-        </NavigationContainer>
-        <Toast />
+        <AppProvider>
+          <NavigationContainer>
+            <Stack.Navigator
+              initialRouteName={"UnauthenticatedStack"}
+              screenOptions={{
+                headerTitle: (props) => <HeaderTitle {...props} />,
+                headerLeft: (props) => <HeaderLeft {...props} />,
+                headerRight: (props) => <HeaderRight {...props} />,
+              }}
+            >
+              <Stack.Screen
+                name="AuthenticatedLandlordStack"
+                component={AuthenticatedLandlordStackNavigator}
+              />
+              <Stack.Screen
+                name="AuthenticatedTenantStack"
+                component={AuthenticatedTenantStackNavigator}
+              />
+              <Stack.Screen
+                name="UnauthenticatedStack"
+                component={UnauthenticatedStackNavigator}
+              />
+            </Stack.Navigator>
+          </NavigationContainer>
+          <Toast />
+        </AppProvider>
       </PaperProvider>
     </QueryClientProvider>
   );

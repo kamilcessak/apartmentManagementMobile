@@ -9,7 +9,7 @@ import { SettingsStackNavigator } from "./SettingsStackNavigator";
 
 const Tab = createBottomTabNavigator();
 
-export const AuthenticatedStackNavigator = () => {
+export const AuthenticatedLandlordStackNavigator = () => {
   const theme = useTheme<CustomMD3Theme>();
 
   return (
