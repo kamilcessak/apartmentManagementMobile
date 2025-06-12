@@ -32,6 +32,19 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Zezwalasz $(PRODUCT_NAME) na dostęp do aparatu telefonu?",
+          "recordAudioAndroid": true
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Aplikacja potrzebuje dostępu do zdjęć aby dodać zdjęcia wyglądu mieszkania."
+        }
       ]
     ],
     "experiments": {

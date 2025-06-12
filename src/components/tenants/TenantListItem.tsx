@@ -11,7 +11,7 @@ const Wrapper = styled.View`
   border-width: 1px;
   border-color: black;
   padding: 16px;
-  border-radius: 4px;
+  border-radius: 8px;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;

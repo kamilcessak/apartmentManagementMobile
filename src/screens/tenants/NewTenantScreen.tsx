@@ -31,14 +31,6 @@ export const NewTenantScreen = () => {
   const navigation = useNavigation();
   const { showNotification } = useToastNotification();
 
-  const {
-    handleSubmit,
-    setValue,
-    formState: { errors },
-  } = useForm<FormValues>({
-    resolver: yupResolver(schema),
-  });
-
   useFocusEffect(
     useCallback(() => {
       let parent = navigation;
@@ -58,6 +50,14 @@ export const NewTenantScreen = () => {
       }
     }, [])
   );
+
+  const {
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<FormValues>({
+    resolver: yupResolver(schema),
+  });
 
   const { mutate, isPending } = useMutation({
     mutationFn: handleAddTenant,

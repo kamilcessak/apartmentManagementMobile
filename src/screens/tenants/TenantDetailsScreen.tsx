@@ -99,7 +99,7 @@ export const TenantDetailsScreen = ({ route: { params } }) => {
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <ScrollView contentContainerStyle={{ padding: 16, gap: 16 }}>
         {detailsData.map((e, i) => (
-          <View>
+          <View key={`tenant-details-item-${i}`}>
             <Text
               variant="bodyLarge"
               style={{ textDecorationLine: "underline" }}
