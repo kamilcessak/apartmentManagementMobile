@@ -12,4 +12,16 @@ export type ApartmentType = {
   roomCount: number;
 };
 
+export type CreateApartmentType = {
+  address: string;
+  metric: number;
+  roomCount: number;
+  monthlyCost: number;
+  description: string;
+  equipment?: string;
+  photos?: string[];
+  documents?: string[];
+};
+
 export type GetApartmentsResponseType = ApartmentType[];
+export type GetApartmentResponseType = ApartmentType;

@@ -1,14 +1,26 @@
 import { ScrollView, KeyboardAvoidingView, Platform } from "react-native";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import {
+  CommonActions,
+  useFocusEffect,
+  useNavigation,
+} from "@react-navigation/native";
 import { useCallback } from "react";
 import { Button, TextInput, useTheme } from "react-native-paper";
 import * as yup from "yup";
+import {
+  requestForegroundPermissionsAsync,
+  getCurrentPositionAsync,
+  reverseGeocodeAsync,
+} from "expo-location";
 
 import { HeaderLeft, HeaderTitle } from "@navigation/header";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm } from "react-hook-form";
-import { FilesSection } from "@components/common/FilesSection";
+import { Controller, useForm } from "react-hook-form";
+import { FilesSection } from "@components/files";
+import { handleCreateApartment } from "@services/apartments";
+import { CreateApartmentType } from "@types/apartment.types";
+import { useToastNotification } from "@hooks/useToastNotification";
 
 const schema = yup.object().shape({
   address: yup.string().required("Address is required"),
@@ -19,22 +31,17 @@ const schema = yup.object().shape({
     .required("Monthly cost of renting your apartment is required"),
   description: yup.string().required("Description field is required"),
   equipment: yup.string(),
+  documents: yup.array().of(yup.string()).notRequired(),
+  photos: yup.array().of(yup.string()).notRequired(),
 });
 
-type FormValues = {
-  address: string;
-  metric: number;
-  roomCount: number;
-  monthlyCost: number;
-  description: string;
-  equipment?: string;
-  photos?: string[];
-  documents?: string[];
-};
+type FormValues = CreateApartmentType;
 
 export const NewApartmentScreen = () => {
   const navigation = useNavigation();
   const theme = useTheme();
+  const { showNotification } = useToastNotification();
+  const queryClient = useQueryClient();
 
   useFocusEffect(
     useCallback(() => {
@@ -48,9 +55,22 @@ export const NewApartmentScreen = () => {
       if (parent) {
         parent.setOptions({
           headerLeft: () => (
-            <HeaderLeft canGoBack goBack={() => navigation.goBack()} />
+            <HeaderLeft
+              canGoBack
+              goBack={() => {
+                navigation.dispatch(
+                  CommonActions.reset({
+                    index: 0,
+                    routes: [{ name: "Apartments" }],
+                  })
+                );
+                navigation.goBack();
+              }}
+            />
           ),
-          headerTitle: () => <HeaderTitle children="Nowy apartament" />,
+          headerTitle: () => (
+            <HeaderTitle children="Nowy apartament" isLeftVisible />
+          ),
         });
       }
     }, [])
@@ -60,15 +80,12 @@ export const NewApartmentScreen = () => {
     handleSubmit,
     register,
     setValue,
+    control,
     watch,
     formState: { errors },
   } = useForm<FormValues>({
     resolver: yupResolver(schema),
   });
-
-  const photos = watch("photos");
-  const documents = watch("documents");
-  console.log({ photos, documents });
 
   const handleAddPhotoToForm = (url: string) => {
     const currentPhotos = watch("photos") || [];
@@ -92,12 +109,65 @@ export const NewApartmentScreen = () => {
     setValue("documents", [...result]);
   };
 
-  const { mutate } = useMutation({
-    mutationFn: () => {},
+  const handleGetAddressFromCoords = async (
+    latitude: number,
+    longitude: number
+  ) => {
+    try {
+      const address = await reverseGeocodeAsync({ latitude, longitude });
+      if (address.length > 0) {
+        const { street, streetNumber, postalCode, city } = address[0];
+        setValue(
+          "address",
+          `ul.${street} ${streetNumber}, ${postalCode} ${city}`
+        );
+      } else {
+        alert("Nie rozpoznanu adresu z pobranych koordynatów.");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Wystąpił błąd podczas rozpoznawania adresu lokalizacji.");
+    }
+  };
+
+  const handleGetLocation = async () => {
+    try {
+      const result = await requestForegroundPermissionsAsync();
+      if (result.status !== "granted") {
+        alert("Brak uprawnień do pobrania lokalizacji mieszkania.");
+        return;
+      } else {
+        const location = await getCurrentPositionAsync({});
+        if (location.coords) {
+          await handleGetAddressFromCoords(
+            location.coords.latitude,
+            location.coords.longitude
+          );
+        } else {
+          throw new Error();
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Wystąpił błąd podczas pobierania lokalizacji. Spróbuj ponownie.");
+    }
+  };
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: (data: FormValues) => handleCreateApartment(data),
+    onSuccess: () => {
+      showNotification("Pomyślnie dodano nowy apartament!", "success");
+      queryClient.invalidateQueries({ queryKey: ["apartments", "list"] });
+      navigation.goBack();
+    },
+    onError: (error) => {
+      console.error("hejka", { error });
+      showNotification("Wystąpił błąd podczas tworzenia apartamentu.", "error");
+    },
   });
 
   const onSubmit = (data: FormValues) => {
-    console.log({ data });
+    mutate(data);
   };
 
   return (
@@ -107,12 +177,22 @@ export const NewApartmentScreen = () => {
       keyboardVerticalOffset={100}
     >
       <ScrollView contentContainerStyle={{ padding: 16, gap: 8 }}>
-        <TextInput
-          label="Adres"
-          mode="outlined"
-          {...register("address")}
-          onChangeText={(text: string) => setValue("address", text)}
-          error={!!errors.address}
+        <Controller
+          control={control}
+          name="address"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              label="Adres"
+              mode="outlined"
+              onChangeText={onChange}
+              error={!!errors.address}
+              onBlur={onBlur}
+              value={value}
+              right={
+                <TextInput.Icon icon="map-marker" onPress={handleGetLocation} />
+              }
+            />
+          )}
         />
         <TextInput
           label="Metric"
@@ -153,13 +233,6 @@ export const NewApartmentScreen = () => {
           error={!!errors.equipment}
           style={{ height: 100 }}
         />
-        <TextInput
-          label="Adres"
-          mode="outlined"
-          {...register("address")}
-          onChangeText={(text: string) => setValue("address", text)}
-          error={!!errors.address}
-        />
         <FilesSection
           title="Zdjęcia"
           handleAddForm={handleAddPhotoToForm}
@@ -170,7 +243,11 @@ export const NewApartmentScreen = () => {
           handleAddForm={handleAddDocumentsToForm}
           handleRemoveForm={handleRemoveDocumentsFromForm}
         />
-        <Button mode="contained" onPress={handleSubmit(onSubmit)}>
+        <Button
+          mode="contained"
+          onPress={handleSubmit(onSubmit)}
+          loading={isPending}
+        >
           Dodaj apartament
         </Button>
         <Button mode="outlined" onPress={() => navigation.goBack()}>

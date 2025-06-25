@@ -12,6 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { HeaderLeft, HeaderTitle } from "@navigation/header";
 import { handleGetTenant } from "@services/tenants";
+import { DescriptionSection } from "@components/common";
 
 export const TenantDetailsScreen = ({ route: { params } }) => {
   const navigation = useNavigation();
@@ -31,6 +32,7 @@ export const TenantDetailsScreen = ({ route: { params } }) => {
           headerTitle: () => (
             <HeaderTitle
               children={`${params?.tenantName ?? "Szczegóły najemcy"}`}
+              isLeftVisible
             />
           ),
           headerLeft: () => (
@@ -81,32 +83,35 @@ export const TenantDetailsScreen = ({ route: { params } }) => {
     );
   }
 
-  const detailsData = [
-    { label: "ID", value: data?._id },
-    { label: "Imię", value: data?.firstName },
-    { label: "Nazwisko", value: data?.lastName },
-    { label: "Adres email", value: data?.email },
-    { label: "Numer telefonu", value: data?.phoneNumber },
-    { label: "Adres zamieszkania", value: data?.address },
-    { label: "Kod zaproszenia", value: data?.invitationCode },
-    {
-      label: "Przypisane ID apartamentu",
-      value: data?.assignedApartmentID ?? "Nie przypisano apartamentu",
-    },
-  ];
-
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <ScrollView contentContainerStyle={{ padding: 16, gap: 16 }}>
-        {detailsData.map((e, i) => (
-          <View key={`tenant-details-item-${i}`}>
-            <Text
-              variant="bodyLarge"
-              style={{ textDecorationLine: "underline" }}
-            >{`${e.label}:`}</Text>
-            <Text variant="titleLarge">{e.value}</Text>
-          </View>
-        ))}
+        <DescriptionSection
+          title="Dane podstawowe"
+          data={[
+            { icon: "identifier", value: `${data?._id}` },
+            { label: "Imie:", value: `${data?.firstName}` },
+            { label: "Nazwisko:", value: `${data?.lastName}` },
+            { icon: "email", value: `${data?.email}` },
+            { icon: "phone", value: `${data?.phoneNumber}` },
+            { icon: "home", value: `${data?.address}` },
+          ]}
+        />
+        <DescriptionSection
+          title="Kod zaproszenia"
+          data={[{ icon: "send", value: `${data?.invitationCode}` }]}
+        />
+        <DescriptionSection
+          title="Przypisany apartament"
+          data={[
+            {
+              icon: "home-city",
+              value: `${
+                data?.assignedApartmentID ?? "Nie przypisano apartamentu"
+              }`,
+            },
+          ]}
+        />
       </ScrollView>
     </View>
   );

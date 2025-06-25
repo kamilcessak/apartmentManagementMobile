@@ -45,6 +45,12 @@
         {
           "photosPermission": "Aplikacja potrzebuje dostępu do zdjęć aby dodać zdjęcia wyglądu mieszkania."
         }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Zezwól $(PRODUCT_NAME) na uzycie twojej lokalizacji."
+        }
       ]
     ],
     "experiments": {

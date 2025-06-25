@@ -83,7 +83,10 @@ export const SignInScreen = () => {
   });
 
   const onSubmit = (data: FormValues) => {
-    mutate(data);
+    mutate({
+      email: data.email.toLowerCase(),
+      password: data.password,
+    });
   };
 
   return (

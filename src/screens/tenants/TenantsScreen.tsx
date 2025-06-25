@@ -1,5 +1,5 @@
-import { useCallback } from "react";
-import { ScrollView, View } from "react-native";
+import { useCallback, useState } from "react";
+import { RefreshControl, ScrollView, View } from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { useQuery } from "@tanstack/react-query";
 
@@ -8,8 +8,12 @@ import { handleGetTenants } from "@services/tenants";
 import { TenantListItem } from "@components/tenants";
 import { ErrorScreen, LoadingScreen } from "@screens/common";
 import { AddIcon, EmptyList } from "@components/common";
+import { useToastNotification } from "@hooks/useToastNotification";
 
 export const TenantsScreen = () => {
+  const [isRefreshing, setisRefreshing] = useState(false);
+
+  const { showNotification } = useToastNotification();
   const navigation = useNavigation();
 
   useFocusEffect(
@@ -35,6 +39,18 @@ export const TenantsScreen = () => {
     queryKey: ["tenants", "list"],
   });
 
+  const onRefresh = () => {
+    try {
+      setisRefreshing(true);
+      refetch();
+    } catch (error) {
+      console.error(error);
+      showNotification("Wystąpił błąd podczas odświezania danych.", "error");
+    } finally {
+      setisRefreshing(false);
+    }
+  };
+
   if (isLoading) {
     return <LoadingScreen />;
   }
@@ -46,7 +62,12 @@ export const TenantsScreen = () => {
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       {data?.length ? (
-        <ScrollView contentContainerStyle={{ padding: 16, gap: 16 }}>
+        <ScrollView
+          refreshControl={
+            <RefreshControl onRefresh={onRefresh} refreshing={isRefreshing} />
+          }
+          contentContainerStyle={{ padding: 16, gap: 16 }}
+        >
           {data?.map((e, i) => (
             <TenantListItem {...e} key={`tenant-${e._id}-${i}`} />
           ))}

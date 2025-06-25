@@ -1,5 +1,10 @@
-import { useCallback } from "react";
-import { ScrollView, TouchableOpacity, View } from "react-native";
+import { useCallback, useState } from "react";
+import {
+  RefreshControl,
+  ScrollView,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useQuery } from "@tanstack/react-query";
 
@@ -8,10 +13,19 @@ import { handleGetApartments } from "@services/apartments";
 import { ErrorScreen, LoadingScreen } from "@screens/common";
 import { AddIcon, EmptyList } from "@components/common";
 import { IconButton, useTheme, Text } from "react-native-paper";
+import { useToastNotification } from "@hooks/useToastNotification";
 
 export const ApartmentsScreen = () => {
+  const [isRefreshing, setisRefreshing] = useState(false);
+
   const navigation = useNavigation();
   const theme = useTheme();
+  const { showNotification } = useToastNotification();
+
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ["apartments", "list"],
+    queryFn: handleGetApartments,
+  });
 
   useFocusEffect(
     useCallback(() => {
@@ -28,13 +42,23 @@ export const ApartmentsScreen = () => {
           headerTitle: () => <HeaderTitle children="Twoje apartamenty" />,
         });
       }
+
+      refetch();
+      return () => {};
     }, [])
   );
 
-  const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ["apartments", "list"],
-    queryFn: handleGetApartments,
-  });
+  const onRefresh = () => {
+    try {
+      setisRefreshing(true);
+      refetch();
+    } catch (error) {
+      console.error(error);
+      showNotification("Wystąpił błąd podczas odświezania danych.", "error");
+    } finally {
+      setisRefreshing(false);
+    }
+  };
 
   if (isLoading) {
     return <LoadingScreen />;
@@ -48,11 +72,18 @@ export const ApartmentsScreen = () => {
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       {data?.length ? (
-        <ScrollView contentContainerStyle={{ padding: 16 }}>
+        <ScrollView
+          contentContainerStyle={{ padding: 16, gap: 16 }}
+          refreshControl={
+            <RefreshControl onRefresh={onRefresh} refreshing={isRefreshing} />
+          }
+        >
           {data.map((e, i) => (
             <TouchableOpacity
-              key={`apartment-item-${e.id}-${i}`}
-              onPress={() => navigation.navigate("ApartmentDetails")}
+              key={`apartment-item-${e._id}-${i}`}
+              onPress={() =>
+                navigation.navigate("ApartmentDetails", { id: e._id })
+              }
               style={{
                 flexDirection: "row",
                 alignItems: "center",

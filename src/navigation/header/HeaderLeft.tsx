@@ -11,7 +11,7 @@ export const HeaderLeft = (props) => {
   }
 
   return (
-    <View style={{ top: 0 }}>
+    <View style={{ top: 0, borderColor: "red", borderWidth: 0 }}>
       <IconButton
         icon="chevron-left"
         size={32}

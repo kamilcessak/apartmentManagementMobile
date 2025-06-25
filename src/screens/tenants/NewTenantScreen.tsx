@@ -1,6 +1,10 @@
 import { useCallback } from "react";
 import { ScrollView, View } from "react-native";
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import {
+  useNavigation,
+  useFocusEffect,
+  CommonActions,
+} from "@react-navigation/native";
 import { Button, TextInput } from "react-native-paper";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -42,9 +46,22 @@ export const NewTenantScreen = () => {
 
       if (parent) {
         parent.setOptions({
-          headerTitle: () => <HeaderTitle children="Nowy najemca" />,
+          headerTitle: () => (
+            <HeaderTitle children="Nowy najemca" isLeftVisible />
+          ),
           headerLeft: () => (
-            <HeaderLeft canGoBack goBack={() => navigation.goBack()} />
+            <HeaderLeft
+              canGoBack
+              goBack={() => {
+                navigation.dispatch(
+                  CommonActions.reset({
+                    index: 0,
+                    routes: [{ name: "Tenants" }],
+                  })
+                );
+                navigation.goBack();
+              }}
+            />
           ),
         });
       }

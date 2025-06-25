@@ -19,6 +19,7 @@ export const AuthenticatedLandlordStackNavigator = () => {
         headerShown: false,
         tabBarActiveTintColor: theme.colors.customPrimary,
         tabBarInactiveTintColor: theme.colors.customBlack,
+        unmountOnBlur: true,
       }}
     >
       <Tab.Screen

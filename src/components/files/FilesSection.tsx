@@ -12,6 +12,7 @@ import { useMutation } from "@tanstack/react-query";
 import { FileType } from "@types/files.types";
 import api from "@services/api.service";
 import { useToastNotification } from "@hooks/useToastNotification";
+import { FileItem } from "./FileItem";
 
 type UploadResult = {
   success: boolean;
@@ -206,35 +207,12 @@ export const FilesSection: FC<Props> = ({
           }}
         >
           {files.map((e, i) => (
-            <View
-              style={{
-                width: "48%",
-                marginBottom: 16,
-                borderWidth: 1,
-                borderColor: theme.colors.grayTertiary,
-                borderRadius: 8,
-                padding: 8,
-                alignItems: "center",
-              }}
-            >
-              <Icon source={"image"} size={64} />
-              <Text numberOfLines={3} style={{ textAlign: "center" }}>
-                {e.name}
-              </Text>
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <IconButton
-                  icon="eye"
-                  size={32}
-                  iconColor={theme.colors.customPrimary}
-                />
-                <IconButton
-                  icon="delete"
-                  size={32}
-                  onPress={() => deleteFile(`${e.fileName}`)}
-                  iconColor={theme.colors.customError}
-                />
-              </View>
-            </View>
+            <FileItem
+              key={`file-${e.fileName}-item-${i}`}
+              name={e.name}
+              handleDeleteFile={() => deleteFile(`${e.fileName}`)}
+              handleShowFile={() => {}}
+            />
           ))}
         </View>
       ) : null}
