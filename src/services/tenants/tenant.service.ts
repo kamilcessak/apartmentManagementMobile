@@ -15,7 +15,6 @@ export const handleAddTenant = async (data: AddTenantType) => {
     const response = await api.post<TenantType>("tenant", data);
     return response.data;
   } catch (error) {
-    console.error(error);
     throw error;
   }
 };
@@ -25,7 +24,6 @@ export const handleGetTenants = async () => {
     const response = await api.get<GetTenantsResponseType>("tenants");
     return response.data;
   } catch (error) {
-    console.error(error);
     throw error;
   }
 };
@@ -35,7 +33,6 @@ export const handleGetTenant = async (id: string) => {
     const response = await api.get<TenantType>(`tenant/${id}`);
     return response.data;
   } catch (error) {
-    console.error(error);
     throw error;
   }
 };

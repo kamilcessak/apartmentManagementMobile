@@ -23,17 +23,16 @@ export const HomeScreen = () => {
   const quickActions = [
     {
       title: "Dodaj apartament",
-      onPress: () =>
-        navigation.navigate("Mieszkania", { screen: "NewApartment" }),
+      onPress: () => navigation.navigate("Flats", { screen: "NewApartment" }),
     },
     {
       title: "Dodaj najemce",
-      onPress: () => navigation.navigate("Najemcy", { screen: "NewTenant" }),
+      onPress: () => navigation.navigate("Tenants", { screen: "NewTenant" }),
     },
     {
       title: "Zaktualizuj profil",
       onPress: () =>
-        navigation.navigate("Ustawienia", { screen: "ProfileSettings" }),
+        navigation.navigate("SettingsStack", { screen: "ProfileSettings" }),
     },
   ];
 
@@ -61,14 +60,14 @@ export const HomeScreen = () => {
         <View style={{ gap: 8 }}>
           <Text variant="titleMedium">Szybkie akcje:</Text>
           <ScrollView horizontal contentContainerStyle={{ gap: 16 }}>
-            {quickActions.map((e, i) => (
+            {quickActions.map(({ title, onPress }, i) => (
               <Button
-                key={`quick-action-${e.title}-${i}`}
+                key={`quick-action-${title}-${i}`}
                 mode="outlined"
                 style={{ borderRadius: 8 }}
-                onPress={e.onPress}
+                onPress={onPress}
               >
-                {e.title}
+                {title}
               </Button>
             ))}
           </ScrollView>

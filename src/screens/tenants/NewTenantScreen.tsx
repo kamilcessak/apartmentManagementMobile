@@ -4,20 +4,21 @@ import { Button, TextInput } from "react-native-paper";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
-
 import { useMutation } from "@tanstack/react-query";
+import { StackNavigationProp } from "@react-navigation/stack";
+
 import { handleAddTenant } from "@services/tenants";
 import { useToastNotification } from "@hooks/useToastNotification";
-import { StackNavigationProp } from "@react-navigation/stack";
 import { TenantsStackNavigatorParamList } from "@typings/navigation.types";
 import useHeaderOptions from "@hooks/useHeaderOptions";
+import { useAppTheme } from "@hooks/useAppTheme";
 
 const schema = yup.object().shape({
-  firstName: yup.string().required("First name is required"),
-  lastName: yup.string().required("Last name is required"),
-  email: yup.string().required("Email is required"),
-  phoneNumber: yup.string().required("Phone number is required"),
-  address: yup.string().required("Address is required"),
+  firstName: yup.string().required("Imie jest wymagane."),
+  lastName: yup.string().required("Nazwisko jest wymagane."),
+  email: yup.string().required("Email jest wymagany."),
+  phoneNumber: yup.string().required("Numer telefonu jest wymagany."),
+  address: yup.string().required("Adres jest wymagany."),
 });
 
 type FormValues = {
@@ -36,6 +37,7 @@ type NavigationPropType = StackNavigationProp<
 export const NewTenantScreen = () => {
   const navigation = useNavigation<NavigationPropType>();
   const { showNotification } = useToastNotification();
+  const theme = useAppTheme();
 
   useHeaderOptions(navigation, {
     title: "Nowy najemca",
@@ -75,12 +77,10 @@ export const NewTenantScreen = () => {
     },
   });
 
-  const onSubmit = (data: FormValues) => {
-    mutate(data);
-  };
+  const onSubmit = (data: FormValues) => mutate(data);
 
   return (
-    <View style={{ flex: 1, backgroundColor: "white" }}>
+    <View style={{ flex: 1, backgroundColor: theme.colors.customBackground }}>
       <ScrollView contentContainerStyle={{ padding: 16, gap: 16 }}>
         <TextInput
           label="Imię"
@@ -119,7 +119,7 @@ export const NewTenantScreen = () => {
           onPress={handleSubmit(onSubmit)}
           loading={isPending}
         >
-          Dodaj najemce
+          {`Dodaj najemce`}
         </Button>
       </View>
     </View>

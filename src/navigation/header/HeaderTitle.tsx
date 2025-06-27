@@ -1,6 +1,28 @@
 import React, { FC, useMemo } from "react";
-import { Image, useWindowDimensions, View } from "react-native";
-import { Text, useTheme } from "react-native-paper";
+import { useWindowDimensions } from "react-native";
+import { Text } from "react-native-paper";
+import styled from "styled-components/native";
+
+import { DefaultTheme } from "@typings/styledTheme";
+
+const Wrapper = styled.View`
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+`;
+
+const LogoWrapper = styled.View`
+  border-color: ${({ theme }: { theme: DefaultTheme }) =>
+    theme.colors.graySecondary};
+  border-width: 1px;
+  border-radius: 30px;
+  padding: 4px;
+`;
+
+const StyledImage = styled.Image`
+  width: 30px;
+  height: 30px;
+`;
 
 type Props = {
   children: string;
@@ -10,42 +32,25 @@ type Props = {
 
 export const HeaderTitle: FC<Props> = ({ children, isLeftVisible }) => {
   const { width } = useWindowDimensions();
-  const theme = useTheme();
 
-  const calculatedWidth = useMemo(() => {
-    if (isLeftVisible) {
-      return width - 16 * 2 - 64;
-    } else {
-      return width - 16 * 2;
-    }
-  }, [width, isLeftVisible]);
+  const calculatedWidth = useMemo(
+    () => width - 16 * 2 - (isLeftVisible ? 64 : 0),
+    [width, isLeftVisible]
+  );
 
   return (
-    <View
+    <Wrapper
       style={{
-        borderColor: "red",
-        borderWidth: 0,
         width: calculatedWidth,
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 8,
       }}
     >
-      <View
-        style={{
-          borderColor: theme.colors.graySecondary,
-          borderWidth: 1,
-          borderRadius: 30,
-          padding: 4,
-        }}
-      >
-        <Image
+      <LogoWrapper>
+        <StyledImage
           source={require("@assets/images/logo_icon.png")}
-          style={{ width: 30, height: 30 }}
           resizeMode="contain"
         />
-      </View>
+      </LogoWrapper>
       <Text variant="titleLarge">{children}</Text>
-    </View>
+    </Wrapper>
   );
 };

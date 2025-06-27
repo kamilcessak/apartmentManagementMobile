@@ -1,9 +1,13 @@
-import React from "react";
+import React, { FC } from "react";
 import { View } from "react-native";
 import { IconButton } from "react-native-paper";
 
-export const HeaderRight = (props) => {
-  if (!props.canGoBack) {
+type Props = {
+  canGoBack?: boolean;
+};
+
+export const HeaderRight: FC<Props> = (props) => {
+  if (!props?.canGoBack) {
     return null;
   }
 

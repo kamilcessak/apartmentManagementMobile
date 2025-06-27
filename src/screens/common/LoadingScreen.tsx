@@ -1,17 +1,18 @@
-import { View } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
+import styled from "styled-components/native";
 
-export const LoadingScreen = () => {
-  return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: "white",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <ActivityIndicator size={64} />
-    </View>
-  );
-};
+import { DefaultTheme } from "@typings/styledTheme";
+
+const Wrapper = styled.View`
+  flex: 1;
+  background-color: ${({ theme }: { theme: DefaultTheme }) =>
+    theme.colors.customBackground};
+  align-items: center;
+  justify-content: center;
+`;
+
+export const LoadingScreen = () => (
+  <Wrapper>
+    <ActivityIndicator size={64} />
+  </Wrapper>
+);

@@ -1,15 +1,15 @@
 import { RouteProp, useNavigation } from "@react-navigation/native";
 import { FC } from "react";
 import { ScrollView, View } from "react-native";
-import { ActivityIndicator, Button, Icon, Text } from "react-native-paper";
 import { useQuery } from "@tanstack/react-query";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 import { handleGetTenant } from "@services/tenants";
 import { DescriptionSection } from "@components/common";
-import { StackNavigationProp } from "@react-navigation/stack";
 import { TenantsStackNavigatorParamList } from "@typings/navigation.types";
 import useHeaderOptions from "@hooks/useHeaderOptions";
 import { useAppTheme } from "@hooks/useAppTheme";
+import { ErrorScreen, LoadingScreen } from "@screens/common";
 
 type NavigationPropType = StackNavigationProp<
   TenantsStackNavigatorParamList,
@@ -22,7 +22,9 @@ type TenantDetailsScreenProps = RouteProp<
 >;
 
 export const TenantDetailsScreen: FC<{ route: TenantDetailsScreenProps }> = ({
-  route: { params },
+  route: {
+    params: { id, ...params },
+  },
 }) => {
   const navigation = useNavigation<NavigationPropType>();
   const theme = useAppTheme();
@@ -36,47 +38,25 @@ export const TenantDetailsScreen: FC<{ route: TenantDetailsScreenProps }> = ({
   });
 
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ["tenant", `${params.id}`, "details"],
-    queryFn: () => handleGetTenant(params.id),
+    queryKey: ["tenant", `${id}`, "details"],
+    queryFn: () => handleGetTenant(id),
   });
 
   if (isLoading) {
-    return (
-      <View style={{ flex: 1, backgroundColor: "white" }}>
-        <ActivityIndicator size={64} />
-      </View>
-    );
+    return <LoadingScreen />;
   }
 
   if (isError) {
     return (
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: "white",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 16,
-          padding: 32,
-        }}
-      >
-        <Icon
-          source="alert-decagram-outline"
-          size={128}
-          color={theme.colors.customError}
-        />
-        <Text variant="headlineMedium" style={{ textAlign: "center" }}>
-          Wystąpił błąd podczas pobierania danych wynajmującego.
-        </Text>
-        <Button onPress={() => refetch()} textColor={theme.colors.customError}>
-          Spróbuj ponownie
-        </Button>
-      </View>
+      <ErrorScreen
+        onRetry={refetch}
+        message="Wystąpił błąd podczas pobierania danych wynajmującego."
+      />
     );
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: "white" }}>
+    <View style={{ flex: 1, backgroundColor: theme.colors.customBackground }}>
       <ScrollView contentContainerStyle={{ padding: 16, gap: 16 }}>
         <DescriptionSection
           title="Dane podstawowe"

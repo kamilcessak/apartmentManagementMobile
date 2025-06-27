@@ -27,7 +27,7 @@ export const handleGetApartment = async (id: string) => {
 
 export const handleCreateApartment = async (data: CreateApartmentType) => {
   try {
-    const response = await api.post<any>(`apartment`, data);
+    const response = await api.post(`apartment`, data);
     return response.data;
   } catch (error) {
     throw error;

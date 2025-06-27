@@ -1,9 +1,9 @@
 import { useNavigation } from "@react-navigation/native";
 import { ScrollView, View } from "react-native";
-
 import { Button } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StackNavigationProp } from "@react-navigation/stack";
+
 import {
   RootStackParamList,
   SettingsStackNavigatorParamList,
@@ -35,10 +35,10 @@ export const SettingsScreen = () => {
           mode="outlined"
           onPress={() => navigation.navigate("ProfileSettings")}
         >
-          Ustawienia konta
+          {`Ustawienia konta`}
         </Button>
         <Button mode="outlined" onPress={signOut}>
-          Wyloguj
+          {`Wyloguj`}
         </Button>
       </ScrollView>
     </View>

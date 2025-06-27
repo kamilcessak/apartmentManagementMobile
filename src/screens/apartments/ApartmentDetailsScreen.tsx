@@ -1,12 +1,12 @@
 import { ScrollView, View } from "react-native";
 import { RouteProp, useNavigation } from "@react-navigation/native";
 import { FC } from "react";
-
 import { useQuery } from "@tanstack/react-query";
+import { StackNavigationProp } from "@react-navigation/stack";
+
 import { handleGetApartment } from "@services/apartments";
 import { ErrorScreen, LoadingScreen } from "@screens/common";
 import { DescriptionSection } from "@components/common";
-import { StackNavigationProp } from "@react-navigation/stack";
 import { ApartmentsStackNavigatorParamList } from "@typings/navigation.types";
 import useHeaderOptions from "@hooks/useHeaderOptions";
 import { useAppTheme } from "@hooks/useAppTheme";
@@ -21,9 +21,13 @@ type TenantDetailsScreenProps = RouteProp<
   "ApartmentDetails"
 >;
 
-export const ApartmentDetailsScreen: FC<{ route: TenantDetailsScreenProps }> = (
-  props
-) => {
+export const ApartmentDetailsScreen: FC<{
+  route: TenantDetailsScreenProps;
+}> = ({
+  route: {
+    params: { id },
+  },
+}) => {
   const navigation = useNavigation<NavigationPropType>();
   const theme = useAppTheme();
 
@@ -37,7 +41,7 @@ export const ApartmentDetailsScreen: FC<{ route: TenantDetailsScreenProps }> = (
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["apartments", "list"],
-    queryFn: () => handleGetApartment(props.route.params.id),
+    queryFn: () => handleGetApartment(id),
   });
 
   if (isLoading) {
@@ -45,11 +49,16 @@ export const ApartmentDetailsScreen: FC<{ route: TenantDetailsScreenProps }> = (
   }
 
   if (isError) {
-    return <ErrorScreen onRetry={refetch} />;
+    return (
+      <ErrorScreen
+        onRetry={refetch}
+        message="Wystąpił błąd podczas pobierania szczegółów apartamentu."
+      />
+    );
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: "white" }}>
+    <View style={{ flex: 1, backgroundColor: theme.colors.customBackground }}>
       <ScrollView contentContainerStyle={{ padding: 16, gap: 16 }}>
         <DescriptionSection
           title="Dane podstawowe"

@@ -3,9 +3,11 @@ import { TouchableOpacity, View } from "react-native";
 import { IconButton, Text } from "react-native-paper";
 import styled from "styled-components/native";
 import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 import { getRandomRgbaColor } from "@utils/generateRandomColor";
 import { TenantType } from "@typings/tenant.types";
+import { TenantsStackNavigatorParamList } from "@typings/navigation.types";
 
 const Wrapper = styled.View`
   border-width: 1px;
@@ -25,6 +27,11 @@ const AvatarWrapper = styled.View`
   border-radius: 32px;
 `;
 
+type NavigationPropType = StackNavigationProp<
+  TenantsStackNavigatorParamList,
+  "Tenants"
+>;
+
 type Props = TenantType;
 
 export const TenantListItem: FC<Props> = ({
@@ -34,7 +41,13 @@ export const TenantListItem: FC<Props> = ({
   phoneNumber,
   _id,
 }) => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationPropType>();
+
+  const handleNavigateToTenant = () =>
+    navigation.navigate("TenantDetails", {
+      id: _id,
+      tenantName: `${firstName} ${lastName}`,
+    });
 
   return (
     <Wrapper>
@@ -55,14 +68,7 @@ export const TenantListItem: FC<Props> = ({
         }`}</Text>
         <Text variant="bodyMedium">{phoneNumber}</Text>
       </View>
-      <TouchableOpacity
-        onPress={() =>
-          navigation.navigate("TenantDetails", {
-            id: _id,
-            tenantName: `${firstName} ${lastName}`,
-          })
-        }
-      >
+      <TouchableOpacity onPress={handleNavigateToTenant}>
         <IconButton
           icon="account-eye-outline"
           size={32}

@@ -7,9 +7,17 @@ import styled from "styled-components/native";
 import { FileItem } from "@components/files";
 import { handleGetFile } from "@services/files";
 import { ImageModal } from "@components/modals";
+import { DefaultTheme } from "@typings/styledTheme";
 
 import { DescriptionItem } from "./DescriptionItem";
-import { useAppTheme } from "@hooks/useAppTheme";
+
+const Wrapper = styled.View`
+  background-color: ${({ theme }: { theme: DefaultTheme }) =>
+    theme.colors.customBackground};
+  padding: 16px;
+  border-radius: 8px;
+  gap: 8px;
+`;
 
 const ContentWrapper = styled.View`
   width: 100%;
@@ -32,15 +40,12 @@ type Props = {
 
 export const DescriptionSection: FC<Props> = ({ title, data }) => {
   const [imgToShow, setimgToShow] = useState("");
-  const theme = useAppTheme();
 
   const isSectionWithFiles = data.some((e) => e?.files?.length);
 
   const { mutate: getFile } = useMutation({
     mutationFn: (filename: string) => handleGetFile(filename),
-    onSuccess: (data) => {
-      setimgToShow(data);
-    },
+    onSuccess: (data) => setimgToShow(data),
   });
 
   const renderContent = () => {
@@ -69,18 +74,11 @@ export const DescriptionSection: FC<Props> = ({ title, data }) => {
 
   return (
     <>
-      <View
-        style={{
-          backgroundColor: theme.colors.customBackground,
-          padding: 16,
-          borderRadius: 8,
-          gap: 8,
-        }}
-      >
+      <Wrapper>
         <Text variant="titleLarge">{title}</Text>
         <Divider />
         {renderContent()}
-      </View>
+      </Wrapper>
       <ImageModal
         isVisible={!!imgToShow.length}
         onClose={() => setimgToShow("")}

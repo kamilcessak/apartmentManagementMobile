@@ -24,18 +24,16 @@ export const DescriptionItem: FC<Props> = ({
   label,
   color,
   disableNumberOfLines,
-}) => {
-  return (
-    <Wrapper>
-      {icon ? <Icon source={icon} size={24} /> : null}
-      {label ? <Text variant="labelLarge">{label}</Text> : null}
-      <Text
-        variant="bodyLarge"
-        numberOfLines={disableNumberOfLines ? undefined : 2}
-        style={{ color }}
-      >
-        {value}
-      </Text>
-    </Wrapper>
-  );
-};
+}) => (
+  <Wrapper>
+    {icon ? <Icon source={icon} size={24} /> : null}
+    {label ? <Text variant="labelLarge">{label}</Text> : null}
+    <Text
+      variant="bodyLarge"
+      numberOfLines={disableNumberOfLines ? undefined : 2}
+      style={{ color }}
+    >
+      {value}
+    </Text>
+  </Wrapper>
+);

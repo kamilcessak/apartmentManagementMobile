@@ -1,9 +1,14 @@
 import { useNavigation } from "@react-navigation/native";
-import React from "react";
+import React, { FC } from "react";
 import { View } from "react-native";
 import { IconButton } from "react-native-paper";
 
-export const HeaderLeft = (props) => {
+type Props = {
+  canGoBack?: boolean;
+  goBack?: () => void;
+};
+
+export const HeaderLeft: FC<Props> = (props) => {
   const { goBack } = useNavigation();
 
   if (!props.canGoBack) {
@@ -11,7 +16,7 @@ export const HeaderLeft = (props) => {
   }
 
   return (
-    <View style={{ top: 0, borderColor: "red", borderWidth: 0 }}>
+    <View style={{ top: 0 }}>
       <IconButton
         icon="chevron-left"
         size={32}

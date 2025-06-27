@@ -1,13 +1,30 @@
-import { View } from "react-native";
 import { FC } from "react";
 import { Icon, IconButton, Text } from "react-native-paper";
+import styled from "styled-components/native";
 
 import { useAppTheme } from "@hooks/useAppTheme";
+import { DefaultTheme } from "@typings/styledTheme";
+
+const Wrapper = styled.View`
+  width: "48%";
+  margin-bottom: 16px;
+  border-width: 1px;
+  border-color: ${({ theme }: { theme: DefaultTheme }) =>
+    theme.colors.grayTertiary};
+  border-radius: 8px;
+  padding: 8px;
+  align-items: "center";
+`;
+
+const ButtonsWrapper = styled.View`
+  flex-direction: row;
+  align-items: center;
+`;
 
 type Props = {
   name: string;
   handleShowFile?: () => void;
-  handleDeleteFile?: (file: string) => void;
+  handleDeleteFile?: () => void;
 };
 
 export const FileItem: FC<Props> = ({
@@ -18,22 +35,12 @@ export const FileItem: FC<Props> = ({
   const theme = useAppTheme();
 
   return (
-    <View
-      style={{
-        width: "48%",
-        marginBottom: 16,
-        borderWidth: 1,
-        borderColor: theme.colors.grayTertiary,
-        borderRadius: 8,
-        padding: 8,
-        alignItems: "center",
-      }}
-    >
+    <Wrapper>
       <Icon source={"image"} size={64} />
       <Text numberOfLines={3} style={{ textAlign: "center" }}>
         {name}
       </Text>
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
+      <ButtonsWrapper>
         {handleShowFile ? (
           <IconButton
             icon="eye"
@@ -46,11 +53,11 @@ export const FileItem: FC<Props> = ({
           <IconButton
             icon="delete"
             size={32}
-            onPress={() => handleDeleteFile(name)}
+            onPress={handleDeleteFile}
             iconColor={theme.colors.customError}
           />
         ) : null}
-      </View>
-    </View>
+      </ButtonsWrapper>
+    </Wrapper>
   );
 };

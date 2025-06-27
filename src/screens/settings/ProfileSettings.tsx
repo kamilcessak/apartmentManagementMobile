@@ -4,11 +4,11 @@ import { Button, TextInput } from "react-native-paper";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
-
+import { StackNavigationProp } from "@react-navigation/stack";
 import { useMutation } from "@tanstack/react-query";
+
 import { handleUpdateProfile } from "@services/settings";
 import { useToastNotification } from "@hooks/useToastNotification";
-import { StackNavigationProp } from "@react-navigation/stack";
 import { SettingsStackNavigatorParamList } from "@typings/navigation.types";
 import useHeaderOptions from "@hooks/useHeaderOptions";
 import { useAppTheme } from "@hooks/useAppTheme";
@@ -74,9 +74,7 @@ export const ProfileSettings = () => {
     },
   });
 
-  const onSubmit = (data: FormValues) => {
-    mutate(data);
-  };
+  const onSubmit = (data: FormValues) => mutate(data);
 
   return (
     <KeyboardAvoidingView
@@ -98,7 +96,7 @@ export const ProfileSettings = () => {
           error={!!errors.lastName}
         />
         <Button mode="outlined" onPress={handleSubmit(onSubmit)}>
-          Zapisz dane
+          {`Zapisz dane`}
         </Button>
       </ScrollView>
     </KeyboardAvoidingView>

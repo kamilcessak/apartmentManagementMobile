@@ -92,17 +92,17 @@ describe("TEST: HomeScreen", () => {
     const { getByText } = render(<HomeScreen />);
 
     fireEvent.press(getByText("Dodaj apartament"));
-    expect(mockNavigate).toHaveBeenCalledWith("Mieszkania", {
+    expect(mockNavigate).toHaveBeenCalledWith("Flats", {
       screen: "NewApartment",
     });
 
     fireEvent.press(getByText("Dodaj najemce"));
-    expect(mockNavigate).toHaveBeenCalledWith("Najemcy", {
+    expect(mockNavigate).toHaveBeenCalledWith("Tenants", {
       screen: "NewTenant",
     });
 
     fireEvent.press(getByText("Zaktualizuj profil"));
-    expect(mockNavigate).toHaveBeenCalledWith("Ustawienia", {
+    expect(mockNavigate).toHaveBeenCalledWith("SettingsStack", {
       screen: "ProfileSettings",
     });
   });

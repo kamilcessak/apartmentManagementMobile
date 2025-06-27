@@ -35,15 +35,15 @@ export type SettingsStackNavigatorParamList = {
 
 export type LandlordStackParamList = {
   Home: undefined;
-  Najemcy: NavigatorScreenParams<TenantsStackNavigatorParamList>;
-  Mieszkania: NavigatorScreenParams<ApartmentsStackNavigatorParamList>;
-  Ustawienia: NavigatorScreenParams<SettingsStackNavigatorParamList>;
+  Tenants: NavigatorScreenParams<TenantsStackNavigatorParamList>;
+  Flats: NavigatorScreenParams<ApartmentsStackNavigatorParamList>;
+  SettingsStack: NavigatorScreenParams<SettingsStackNavigatorParamList>;
 };
 
 export type TenantStackParamList = {
   Home: undefined;
-  Wynajem: undefined;
-  Ustawienia: NavigatorScreenParams<SettingsStackNavigatorParamList>;
+  Rental: undefined;
+  SettingsStack: NavigatorScreenParams<SettingsStackNavigatorParamList>;
 };
 
 export type UnauthenticatedStackParamList = {

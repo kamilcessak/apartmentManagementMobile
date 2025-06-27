@@ -1,4 +1,4 @@
-import { Image, ScrollView, View } from "react-native";
+import { ScrollView, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useMutation } from "@tanstack/react-query";
 import Toast from "react-native-toast-message";
@@ -8,18 +8,26 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 import { handleLogin } from "@services/auth";
 import {
   RootStackParamList,
   UnauthenticatedStackParamList,
 } from "@typings/navigation.types";
-import { StackNavigationProp } from "@react-navigation/stack";
 import useHeaderOptions from "@hooks/useHeaderOptions";
+import { useAppTheme } from "@hooks/useAppTheme";
+import styled from "styled-components/native";
+
+const StyledImage = styled.Image`
+  width: 128px;
+  height: 128px;
+  border-radius: 128px;
+`;
 
 const schema = yup.object().shape({
-  email: yup.string().required("Email is required"),
-  password: yup.string().required("Password is required"),
+  email: yup.string().required("Email jest wymagany."),
+  password: yup.string().required("Hasło jest wymagane."),
 });
 
 type FormValues = {
@@ -37,6 +45,7 @@ type NavigationPropType = StackNavigationProp<
 export const SignInScreen = () => {
   const navigation = useNavigation<NavigationPropType>();
   const headerHeight = useHeaderHeight();
+  const theme = useAppTheme();
 
   useHeaderOptions(navigation, {
     title: "Logowanie",
@@ -54,28 +63,30 @@ export const SignInScreen = () => {
     resolver: yupResolver(schema),
   });
 
+  const handleOnSuccess = async (data: any) => {
+    if (data?.data.token) {
+      await AsyncStorage.setItem("token", data.data.token);
+      const isLandlord = data.data.user.role === "Landlord";
+      Toast.show({
+        type: "success",
+        text1: "Pomyślnie zalogowano do konta!",
+        topOffset: headerHeight + 16,
+        onPress: () => Toast.hide(),
+      });
+
+      if (isLandlord) {
+        navigation.replace("AuthenticatedLandlordStack", { screen: "Home" });
+      } else {
+        navigation.replace("AuthenticatedTenantStack", { screen: "Home" });
+      }
+    } else {
+      alert("Wystąpił błąd logowania!");
+    }
+  };
+
   const { mutate, isPending } = useMutation({
     mutationFn: handleLogin,
-    onSuccess: async (data) => {
-      if (data?.data.token) {
-        await AsyncStorage.setItem("token", data.data.token);
-        const isLandlord = data.data.user.role === "Landlord";
-        Toast.show({
-          type: "success",
-          text1: "Pomyślnie zalogowano do konta!",
-          topOffset: headerHeight + 16,
-          onPress: () => Toast.hide(),
-        });
-
-        if (isLandlord) {
-          navigation.replace("AuthenticatedLandlordStack", { screen: "Home" });
-        } else {
-          navigation.replace("AuthenticatedTenantStack", { screen: "Home" });
-        }
-      } else {
-        alert("Login failed");
-      }
-    },
+    onSuccess: handleOnSuccess,
     onError: (error) => {
       console.error(error);
       Toast.show({
@@ -87,15 +98,14 @@ export const SignInScreen = () => {
     },
   });
 
-  const onSubmit = (data: FormValues) => {
+  const onSubmit = ({ email, password }: FormValues) =>
     mutate({
-      email: data.email.toLowerCase(),
-      password: data.password,
+      email: email.toLowerCase(),
+      password,
     });
-  };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "white" }}>
+    <View style={{ flex: 1, backgroundColor: theme.colors.customBackground }}>
       <ScrollView
         scrollEnabled={false}
         contentContainerStyle={{
@@ -104,10 +114,7 @@ export const SignInScreen = () => {
         }}
       >
         <View style={{ alignItems: "center", paddingVertical: 32 }}>
-          <Image
-            source={require("@assets/images/logo.png")}
-            style={{ width: 128, height: 128, borderRadius: 128 }}
-          />
+          <StyledImage source={require("@assets/images/logo.png")} />
         </View>
         <TextInput
           mode="outlined"
@@ -127,7 +134,7 @@ export const SignInScreen = () => {
           onPress={handleSubmit(onSubmit)}
           loading={isPending}
         >
-          Zaloguj się
+          {`Zaloguj się`}
         </Button>
       </ScrollView>
     </View>

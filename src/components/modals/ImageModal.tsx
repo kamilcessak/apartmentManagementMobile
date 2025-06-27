@@ -1,7 +1,28 @@
-import { useAppTheme } from "@hooks/useAppTheme";
 import React, { FC } from "react";
-import { Image, useWindowDimensions, View } from "react-native";
+import { Image, useWindowDimensions } from "react-native";
 import { Modal, IconButton, ActivityIndicator } from "react-native-paper";
+import styled from "styled-components/native";
+
+import { useAppTheme } from "@hooks/useAppTheme";
+import { DefaultTheme } from "@typings/styledTheme";
+
+const IconWrapper = styled.View`
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background-color: ${({ theme }: { theme: DefaultTheme }) =>
+    theme.colors.customBackground};
+  z-index: 999;
+  border-radius: 100px;
+`;
+
+const LoaderWrapper = styled.View`
+  align-items: center;
+  justify-content: center;
+  margin: 16px;
+  position: absolute;
+  z-index: 1;
+`;
 
 type Props = {
   isVisible: boolean;
@@ -13,6 +34,11 @@ export const ImageModal: FC<Props> = ({ isVisible, onClose, uri }) => {
   const theme = useAppTheme();
   const { width, height } = useWindowDimensions();
 
+  const windowStyle = {
+    width: width - 16 * 2,
+    height: height * 0.6,
+  };
+
   return (
     <Modal
       visible={isVisible}
@@ -22,40 +48,20 @@ export const ImageModal: FC<Props> = ({ isVisible, onClose, uri }) => {
         padding: 16,
       }}
     >
-      <View
-        style={{
-          position: "absolute",
-          top: 8,
-          right: 8,
-          backgroundColor: theme.colors.customBackground,
-          zIndex: 999,
-          borderRadius: 100,
-        }}
-      >
+      <IconWrapper>
         <IconButton icon="close" onPress={onClose} />
-      </View>
+      </IconWrapper>
       <Image
         source={{ uri }}
         resizeMode="contain"
         style={{
-          width: width - 16 * 2,
-          height: height * 0.6,
+          ...windowStyle,
           zIndex: 2,
         }}
       />
-      <View
-        style={{
-          width: width - 16 * 2,
-          height: height * 0.6,
-          alignItems: "center",
-          justifyContent: "center",
-          margin: 16,
-          position: "absolute",
-          zIndex: 1,
-        }}
-      >
+      <LoaderWrapper style={windowStyle}>
         <ActivityIndicator size={64} />
-      </View>
+      </LoaderWrapper>
     </Modal>
   );
 };

@@ -24,7 +24,6 @@ export const AuthenticatedLandlordStackNavigator = () => {
         headerShown: false,
         tabBarActiveTintColor: theme.colors.customPrimary,
         tabBarInactiveTintColor: theme.colors.customBlack,
-        unmountOnBlur: true,
       }}
     >
       <Tab.Screen
@@ -41,7 +40,7 @@ export const AuthenticatedLandlordStackNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="Najemcy"
+        name="Tenants"
         component={TenantsStackNavigator}
         options={{
           tabBarIcon: ({ focused, size }) => (
@@ -54,7 +53,7 @@ export const AuthenticatedLandlordStackNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="Mieszkania"
+        name="Flats"
         component={ApartmentsStackNavigator}
         options={{
           tabBarIcon: ({ focused, size }) => (
@@ -67,7 +66,7 @@ export const AuthenticatedLandlordStackNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="Ustawienia"
+        name="SettingsStack"
         component={SettingsStackNavigator}
         options={{
           tabBarIcon: ({ focused, size }) => (

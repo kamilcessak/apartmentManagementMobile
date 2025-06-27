@@ -7,24 +7,28 @@ import {
   getCurrentPositionAsync,
   reverseGeocodeAsync,
 } from "expo-location";
-
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
+import { StackNavigationProp } from "@react-navigation/stack";
+
 import { FilesSection } from "@components/files";
 import { handleCreateApartment } from "@services/apartments";
 import { CreateApartmentType } from "@typings/apartment.types";
 import { useToastNotification } from "@hooks/useToastNotification";
-import { StackNavigationProp } from "@react-navigation/stack";
 import { ApartmentsStackNavigatorParamList } from "@typings/navigation.types";
 import useHeaderOptions from "@hooks/useHeaderOptions";
+import { useAppTheme } from "@hooks/useAppTheme";
 
 const schema: yup.ObjectSchema<CreateApartmentType> = yup.object().shape({
-  address: yup.string().defined().required("Address is required"),
-  metric: yup.number().defined().required("Metric is required"),
-  roomCount: yup.number().defined().required("Rooms count is required"),
-  monthlyCost: yup.number().defined().required("Monthly cost is required"),
-  description: yup.string().defined().required("Description is required"),
+  address: yup.string().defined().required("Adres jest wymagany."),
+  metric: yup.number().defined().required("Metraz jest wymagany."),
+  roomCount: yup.number().defined().required("Liczba pokoi jest wymagana."),
+  monthlyCost: yup
+    .number()
+    .defined()
+    .required("Miesięczny czynsz jest wymagany."),
+  description: yup.string().defined().required("Opis jest wymagany."),
   equipment: yup.string().optional().default(undefined),
   documents: yup
     .array()
@@ -45,6 +49,7 @@ export const NewApartmentScreen = () => {
   const navigation = useNavigation<NavigationPropType>();
   const { showNotification } = useToastNotification();
   const queryClient = useQueryClient();
+  const theme = useAppTheme();
 
   useHeaderOptions(navigation, {
     title: "Nowy apartament",
@@ -162,13 +167,11 @@ export const NewApartmentScreen = () => {
     },
   });
 
-  const onSubmit = (data: FormValues) => {
-    mutate(data);
-  };
+  const onSubmit = (data: FormValues) => mutate(data);
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1, backgroundColor: "white" }}
+      style={{ flex: 1, backgroundColor: theme.colors.customBackground }}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
       keyboardVerticalOffset={100}
     >
@@ -191,7 +194,7 @@ export const NewApartmentScreen = () => {
           )}
         />
         <TextInput
-          label="Metric"
+          label="Metraz"
           mode="outlined"
           {...register("metric")}
           onChangeText={(text: string) => setValue("metric", +text)}
@@ -244,10 +247,10 @@ export const NewApartmentScreen = () => {
           onPress={handleSubmit(onSubmit)}
           loading={isPending}
         >
-          Dodaj apartament
+          {`Dodaj apartament`}
         </Button>
-        <Button mode="outlined" onPress={() => navigation.goBack()}>
-          Anuluj
+        <Button mode="outlined" onPress={navigation.goBack}>
+          {`Anuluj`}
         </Button>
       </ScrollView>
     </KeyboardAvoidingView>

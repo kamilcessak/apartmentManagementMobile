@@ -11,6 +11,7 @@ import { AddIcon, EmptyList } from "@components/common";
 import { useToastNotification } from "@hooks/useToastNotification";
 import { TenantsStackNavigatorParamList } from "@typings/navigation.types";
 import useHeaderOptions from "@hooks/useHeaderOptions";
+import { useAppTheme } from "@hooks/useAppTheme";
 
 type NavigationPropType = StackNavigationProp<
   TenantsStackNavigatorParamList,
@@ -22,6 +23,7 @@ export const TenantsScreen = () => {
 
   const { showNotification } = useToastNotification();
   const navigation = useNavigation<NavigationPropType>();
+  const theme = useAppTheme();
 
   useHeaderOptions(navigation, {
     title: "Twoi najemcy",
@@ -49,11 +51,16 @@ export const TenantsScreen = () => {
   }
 
   if (isError) {
-    return <ErrorScreen onRetry={refetch} />;
+    return (
+      <ErrorScreen
+        onRetry={refetch}
+        message="Wystąpił błąd podczas pobierania listy wynajmujących."
+      />
+    );
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: "white" }}>
+    <View style={{ flex: 1, backgroundColor: theme.colors.customBackground }}>
       {data?.length ? (
         <ScrollView
           refreshControl={

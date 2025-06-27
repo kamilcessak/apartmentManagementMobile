@@ -1,22 +1,17 @@
 import { useCallback, useState } from "react";
-import {
-  RefreshControl,
-  ScrollView,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { RefreshControl, ScrollView, View } from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useQuery } from "@tanstack/react-query";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 import { handleGetApartments } from "@services/apartments";
 import { ErrorScreen, LoadingScreen } from "@screens/common";
 import { AddIcon, EmptyList } from "@components/common";
-import { IconButton, Text } from "react-native-paper";
 import { useToastNotification } from "@hooks/useToastNotification";
-import { StackNavigationProp } from "@react-navigation/stack";
 import { ApartmentsStackNavigatorParamList } from "@typings/navigation.types";
 import useHeaderOptions from "@hooks/useHeaderOptions";
 import { useAppTheme } from "@hooks/useAppTheme";
+import { ApartmentListItem } from "@components/apartments";
 
 type NavigationPropType = StackNavigationProp<
   ApartmentsStackNavigatorParamList,
@@ -62,11 +57,16 @@ export const ApartmentsScreen = () => {
   }
 
   if (isError) {
-    return <ErrorScreen onRetry={refetch} />;
+    return (
+      <ErrorScreen
+        onRetry={refetch}
+        message="Wystąpił błąd podczas pobierania listy apartamentów."
+      />
+    );
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: "white" }}>
+    <View style={{ flex: 1, backgroundColor: theme.colors.customBackground }}>
       {data?.length ? (
         <ScrollView
           contentContainerStyle={{ padding: 16, gap: 16 }}
@@ -74,52 +74,13 @@ export const ApartmentsScreen = () => {
             <RefreshControl onRefresh={onRefresh} refreshing={isRefreshing} />
           }
         >
-          {data.map((e, i) => (
-            <TouchableOpacity
-              key={`apartment-item-${e._id}-${i}`}
-              onPress={() =>
-                navigation.navigate("ApartmentDetails", { id: e._id })
-              }
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                borderWidth: 1,
-                borderColor: theme.colors.grayTertiary,
-                paddingHorizontal: 8,
-                paddingVertical: 16,
-                borderRadius: 8,
-              }}
-            >
-              <IconButton
-                icon="home-city"
-                size={32}
-                style={{ margin: 0, marginRight: 4 }}
-              />
-              <View style={{ gap: 8, flex: 1 }}>
-                <Text
-                  variant="titleLarge"
-                  numberOfLines={2}
-                  style={{ flexShrink: 1, flexWrap: "wrap" }}
-                >
-                  {e.address}
-                </Text>
-                <Text
-                  variant="bodyMedium"
-                  style={{
-                    color: e.isAvailable
-                      ? theme.colors.customSuccess
-                      : theme.colors.customError,
-                  }}
-                >
-                  {e.isAvailable ? `Jest dostępne` : `Jest zajęte`}
-                </Text>
-              </View>
-              <IconButton
-                icon="chevron-right"
-                size={32}
-                style={{ margin: 0 }}
-              />
-            </TouchableOpacity>
+          {data.map(({ address, isAvailable, _id: id }, i) => (
+            <ApartmentListItem
+              key={`apartment-item-${id}-${i}`}
+              address={address}
+              isAvailable={isAvailable}
+              onPress={() => navigation.navigate("ApartmentDetails", { id })}
+            />
           ))}
         </ScrollView>
       ) : (

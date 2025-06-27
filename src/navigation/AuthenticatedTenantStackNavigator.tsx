@@ -39,7 +39,7 @@ export const AuthenticatedTenantStackNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="Wynajem"
+        name="Rental"
         component={TenantRentalScreen}
         options={{
           tabBarIcon: ({ focused, size }) => (
@@ -48,7 +48,7 @@ export const AuthenticatedTenantStackNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="Ustawienia"
+        name="SettingsStack"
         component={SettingsStackNavigator}
         options={{
           tabBarIcon: ({ focused, size }) => (

@@ -1,4 +1,4 @@
-import { View, Alert } from "react-native";
+import { Alert } from "react-native";
 import { FC, useState } from "react";
 import { Button, Text } from "react-native-paper";
 import {
@@ -7,20 +7,50 @@ import {
   requestMediaLibraryPermissionsAsync,
   launchImageLibraryAsync,
 } from "expo-image-picker";
-
+import styled from "styled-components/native";
 import { useMutation } from "@tanstack/react-query";
+
 import { FileType } from "@typings/files.types";
 import api from "@services/api.service";
 import { useToastNotification } from "@hooks/useToastNotification";
+import { AppTheme } from "@styles/theme";
+
 import { FileItem } from "./FileItem";
-import { useAppTheme } from "@hooks/useAppTheme";
+
+const Wrapper = styled.View`
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  border-width: 1px;
+  border-color: ${({ theme }: { theme: AppTheme }) => theme.colors.outline};
+  padding: 16px;
+  border-radius: 8px;
+  gap: 16px;
+`;
+
+const FilesWrapper = styled.View`
+  width: 100%;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 8px;
+`;
+
+const SectionHeader = styled.View`
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+`;
 
 type UploadResult = {
-  success: boolean;
-  url: string;
-  originalName: string;
-  fileName: string;
-  type: string;
+  data: {
+    success: boolean;
+    url: string;
+    originalName: string;
+    fileName: string;
+    type: string;
+  };
 };
 
 type Props = {
@@ -36,7 +66,6 @@ export const FilesSection: FC<Props> = ({
 }) => {
   const [files, setfiles] = useState<FileType[]>([]);
 
-  const theme = useAppTheme();
   const { showNotification } = useToastNotification();
 
   const handleUploadFile = async (uri: string): Promise<UploadResult> => {
@@ -58,13 +87,12 @@ export const FilesSection: FC<Props> = ({
       },
     });
 
-    return response.data;
+    return response;
   };
 
   const handleDeleteFile = async (fileName: string) => {
     try {
       const response = await api.delete(`upload/${fileName}`);
-      console.log({ response });
       if (response.status === 200) {
         setfiles((prev) => {
           const temp = prev.filter((e) => e.fileName !== fileName);
@@ -148,65 +176,40 @@ export const FilesSection: FC<Props> = ({
     }
   };
 
+  const handleAdd = () =>
+    Alert.alert(
+      "Co chcesz zrobić?",
+      "Chcesz przesłać istniejący plik czy zrobić zdjęcie?",
+      [
+        { text: "Anuluj", onPress: () => {}, style: "cancel" },
+        {
+          text: "Zrób zdjęcie",
+          onPress: handleTakePhoto,
+          style: "default",
+        },
+        {
+          text: "Wybierz plik",
+          onPress: handlePickImage,
+          style: "default",
+        },
+      ]
+    );
+
   return (
-    <View
-      style={{
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "space-between",
-        borderWidth: 1,
-        borderColor: theme.colors.outline,
-        padding: 16,
-        borderRadius: 8,
-        gap: 16,
-      }}
-    >
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          width: "100%",
-        }}
-      >
+    <Wrapper>
+      <SectionHeader>
         <Text>{title}</Text>
         <Button
           icon="plus"
           mode="outlined"
           style={{ borderRadius: 8 }}
-          onPress={() =>
-            Alert.alert(
-              "Co chcesz zrobić?",
-              "Chcesz przesłać istniejący plik czy zrobić zdjęcie?",
-              [
-                { text: "Anuluj", onPress: () => {}, style: "cancel" },
-                {
-                  text: "Zrób zdjęcie",
-                  onPress: handleTakePhoto,
-                  style: "default",
-                },
-                {
-                  text: "Wybierz plik",
-                  onPress: handlePickImage,
-                  style: "default",
-                },
-              ]
-            )
-          }
+          onPress={handleAdd}
         >
-          Dodaj
+          {`Dodaj`}
         </Button>
-      </View>
+      </SectionHeader>
       {files?.length ? (
-        <View
-          style={{
-            width: "100%",
-            flexDirection: "row",
-            flexWrap: "wrap",
-            justifyContent: "space-between",
-            padding: 8,
-          }}
-        >
+        <FilesWrapper>
           {files.map((e, i) => (
             <FileItem
               key={`file-${e.fileName}-item-${i}`}
@@ -215,8 +218,8 @@ export const FilesSection: FC<Props> = ({
               handleShowFile={() => {}}
             />
           ))}
-        </View>
+        </FilesWrapper>
       ) : null}
-    </View>
+    </Wrapper>
   );
 };
