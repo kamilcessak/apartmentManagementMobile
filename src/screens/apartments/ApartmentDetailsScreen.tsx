@@ -1,7 +1,6 @@
 import { ScrollView, View } from "react-native";
 import { RouteProp, useNavigation } from "@react-navigation/native";
 import { FC } from "react";
-import { useTheme } from "react-native-paper";
 
 import { useQuery } from "@tanstack/react-query";
 import { handleGetApartment } from "@services/apartments";
@@ -10,6 +9,7 @@ import { DescriptionSection } from "@components/common";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { ApartmentsStackNavigatorParamList } from "@typings/navigation.types";
 import useHeaderOptions from "@hooks/useHeaderOptions";
+import { useAppTheme } from "@hooks/useAppTheme";
 
 type NavigationPropType = StackNavigationProp<
   ApartmentsStackNavigatorParamList,
@@ -25,7 +25,7 @@ export const ApartmentDetailsScreen: FC<{ route: TenantDetailsScreenProps }> = (
   props
 ) => {
   const navigation = useNavigation<NavigationPropType>();
-  const theme = useTheme();
+  const theme = useAppTheme();
 
   useHeaderOptions(navigation, {
     title: "Szczegóły apartamentu",

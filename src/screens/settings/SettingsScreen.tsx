@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import { ScrollView, View } from "react-native";
 
-import { Button, useTheme } from "react-native-paper";
+import { Button } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StackNavigationProp } from "@react-navigation/stack";
 import {
@@ -9,6 +9,7 @@ import {
   SettingsStackNavigatorParamList,
 } from "@typings/navigation.types";
 import useHeaderOptions from "@hooks/useHeaderOptions";
+import { useAppTheme } from "@hooks/useAppTheme";
 
 type CombinedParamList = SettingsStackNavigatorParamList & RootStackParamList;
 
@@ -16,7 +17,7 @@ type NavigationPropType = StackNavigationProp<CombinedParamList, "Settings">;
 
 export const SettingsScreen = () => {
   const navigation = useNavigation<NavigationPropType>();
-  const theme = useTheme();
+  const theme = useAppTheme();
 
   useHeaderOptions(navigation, {
     title: "Ustawienia",

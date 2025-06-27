@@ -1,11 +1,7 @@
+import { useAppTheme } from "@hooks/useAppTheme";
 import React, { FC } from "react";
 import { Image, useWindowDimensions, View } from "react-native";
-import {
-  useTheme,
-  Modal,
-  IconButton,
-  ActivityIndicator,
-} from "react-native-paper";
+import { Modal, IconButton, ActivityIndicator } from "react-native-paper";
 
 type Props = {
   isVisible: boolean;
@@ -14,7 +10,7 @@ type Props = {
 };
 
 export const ImageModal: FC<Props> = ({ isVisible, onClose, uri }) => {
-  const theme = useTheme();
+  const theme = useAppTheme();
   const { width, height } = useWindowDimensions();
 
   return (

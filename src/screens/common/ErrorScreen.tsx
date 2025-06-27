@@ -1,13 +1,14 @@
+import { useAppTheme } from "@hooks/useAppTheme";
 import { FC } from "react";
 import { View } from "react-native";
-import { Button, Icon, Text, useTheme } from "react-native-paper";
+import { Button, Icon, Text } from "react-native-paper";
 
 type Props = {
   onRetry: () => void;
 };
 
 export const ErrorScreen: FC<Props> = ({ onRetry }) => {
-  const theme = useTheme();
+  const theme = useAppTheme();
 
   return (
     <View

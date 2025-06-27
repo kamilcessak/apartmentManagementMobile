@@ -1,13 +1,7 @@
 import { RouteProp, useNavigation } from "@react-navigation/native";
 import { FC } from "react";
 import { ScrollView, View } from "react-native";
-import {
-  ActivityIndicator,
-  Button,
-  Icon,
-  Text,
-  useTheme,
-} from "react-native-paper";
+import { ActivityIndicator, Button, Icon, Text } from "react-native-paper";
 import { useQuery } from "@tanstack/react-query";
 
 import { handleGetTenant } from "@services/tenants";
@@ -15,6 +9,7 @@ import { DescriptionSection } from "@components/common";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { TenantsStackNavigatorParamList } from "@typings/navigation.types";
 import useHeaderOptions from "@hooks/useHeaderOptions";
+import { useAppTheme } from "@hooks/useAppTheme";
 
 type NavigationPropType = StackNavigationProp<
   TenantsStackNavigatorParamList,
@@ -30,7 +25,7 @@ export const TenantDetailsScreen: FC<{ route: TenantDetailsScreenProps }> = ({
   route: { params },
 }) => {
   const navigation = useNavigation<NavigationPropType>();
-  const theme = useTheme();
+  const theme = useAppTheme();
 
   useHeaderOptions(navigation, {
     title: `${params?.tenantName ?? "Szczegóły najemcy"}`,

@@ -11,11 +11,12 @@ import { useQuery } from "@tanstack/react-query";
 import { handleGetApartments } from "@services/apartments";
 import { ErrorScreen, LoadingScreen } from "@screens/common";
 import { AddIcon, EmptyList } from "@components/common";
-import { IconButton, useTheme, Text } from "react-native-paper";
+import { IconButton, Text } from "react-native-paper";
 import { useToastNotification } from "@hooks/useToastNotification";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { ApartmentsStackNavigatorParamList } from "@typings/navigation.types";
 import useHeaderOptions from "@hooks/useHeaderOptions";
+import { useAppTheme } from "@hooks/useAppTheme";
 
 type NavigationPropType = StackNavigationProp<
   ApartmentsStackNavigatorParamList,
@@ -26,7 +27,7 @@ export const ApartmentsScreen = () => {
   const [isRefreshing, setisRefreshing] = useState(false);
 
   const navigation = useNavigation<NavigationPropType>();
-  const theme = useTheme();
+  const theme = useAppTheme();
   const { showNotification } = useToastNotification();
 
   useHeaderOptions(navigation, {

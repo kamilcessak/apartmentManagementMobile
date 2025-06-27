@@ -1,6 +1,6 @@
 import { CommonActions, useNavigation } from "@react-navigation/native";
 import { KeyboardAvoidingView, ScrollView } from "react-native";
-import { Button, TextInput, useTheme } from "react-native-paper";
+import { Button, TextInput } from "react-native-paper";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
@@ -11,6 +11,7 @@ import { useToastNotification } from "@hooks/useToastNotification";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { SettingsStackNavigatorParamList } from "@typings/navigation.types";
 import useHeaderOptions from "@hooks/useHeaderOptions";
+import { useAppTheme } from "@hooks/useAppTheme";
 
 const schema = yup.object().shape({
   firstName: yup.string(),
@@ -29,7 +30,7 @@ type NavigationPropType = StackNavigationProp<
 
 export const ProfileSettings = () => {
   const navigation = useNavigation<NavigationPropType>();
-  const theme = useTheme();
+  const theme = useAppTheme();
   const { showNotification } = useToastNotification();
 
   useHeaderOptions(navigation, {

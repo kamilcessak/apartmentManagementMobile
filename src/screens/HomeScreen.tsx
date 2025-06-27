@@ -2,17 +2,18 @@ import React, { useMemo } from "react";
 import { View, ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { useTheme, Text, Button, Icon } from "react-native-paper";
+import { Text, Button, Icon } from "react-native-paper";
 
 import { useUserData } from "@hooks/useUserData";
 import { LandlordStackParamList } from "@typings/navigation.types";
 import useHeaderOptions from "@hooks/useHeaderOptions";
+import { useAppTheme } from "@hooks/useAppTheme";
 
 type NavigationPropType = StackNavigationProp<LandlordStackParamList, "Home">;
 
 export const HomeScreen = () => {
   const navigation = useNavigation<NavigationPropType>();
-  const theme = useTheme();
+  const theme = useAppTheme();
   const { data } = useUserData();
 
   useHeaderOptions(navigation, {

@@ -85,3 +85,5 @@ export const theme: CustomMD3Theme = {
   spacing,
   borderRadius,
 };
+
+export type AppTheme = typeof theme;

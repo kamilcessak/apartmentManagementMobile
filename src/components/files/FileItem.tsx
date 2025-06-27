@@ -1,17 +1,8 @@
-import { View, Alert } from "react-native";
-import { FC, useState } from "react";
-import { Button, Icon, IconButton, Text, useTheme } from "react-native-paper";
-import {
-  requestCameraPermissionsAsync,
-  launchCameraAsync,
-  requestMediaLibraryPermissionsAsync,
-  launchImageLibraryAsync,
-} from "expo-image-picker";
+import { View } from "react-native";
+import { FC } from "react";
+import { Icon, IconButton, Text } from "react-native-paper";
 
-import { useMutation } from "@tanstack/react-query";
-import { FileType } from "@typings/files.types";
-import api from "@services/api.service";
-import { useToastNotification } from "@hooks/useToastNotification";
+import { useAppTheme } from "@hooks/useAppTheme";
 
 type Props = {
   name: string;
@@ -24,7 +15,7 @@ export const FileItem: FC<Props> = ({
   handleDeleteFile,
   handleShowFile,
 }) => {
-  const theme = useTheme();
+  const theme = useAppTheme();
 
   return (
     <View
@@ -55,7 +46,7 @@ export const FileItem: FC<Props> = ({
           <IconButton
             icon="delete"
             size={32}
-            onPress={handleDeleteFile}
+            onPress={() => handleDeleteFile(name)}
             iconColor={theme.colors.customError}
           />
         ) : null}

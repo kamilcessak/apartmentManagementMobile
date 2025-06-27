@@ -1,6 +1,6 @@
 import React, { FC, useState } from "react";
 import { View } from "react-native";
-import { Divider, useTheme, Text } from "react-native-paper";
+import { Divider, Text } from "react-native-paper";
 import { useMutation } from "@tanstack/react-query";
 import styled from "styled-components/native";
 
@@ -9,6 +9,7 @@ import { handleGetFile } from "@services/files";
 import { ImageModal } from "@components/modals";
 
 import { DescriptionItem } from "./DescriptionItem";
+import { useAppTheme } from "@hooks/useAppTheme";
 
 const ContentWrapper = styled.View`
   width: 100%;
@@ -31,7 +32,7 @@ type Props = {
 
 export const DescriptionSection: FC<Props> = ({ title, data }) => {
   const [imgToShow, setimgToShow] = useState("");
-  const theme = useTheme();
+  const theme = useAppTheme();
 
   const isSectionWithFiles = data.some((e) => e?.files?.length);
 

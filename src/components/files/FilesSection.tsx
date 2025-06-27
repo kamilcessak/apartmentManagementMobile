@@ -1,6 +1,6 @@
 import { View, Alert } from "react-native";
 import { FC, useState } from "react";
-import { Button, Icon, IconButton, Text, useTheme } from "react-native-paper";
+import { Button, Text } from "react-native-paper";
 import {
   requestCameraPermissionsAsync,
   launchCameraAsync,
@@ -13,6 +13,7 @@ import { FileType } from "@typings/files.types";
 import api from "@services/api.service";
 import { useToastNotification } from "@hooks/useToastNotification";
 import { FileItem } from "./FileItem";
+import { useAppTheme } from "@hooks/useAppTheme";
 
 type UploadResult = {
   success: boolean;
@@ -35,7 +36,7 @@ export const FilesSection: FC<Props> = ({
 }) => {
   const [files, setfiles] = useState<FileType[]>([]);
 
-  const theme = useTheme();
+  const theme = useAppTheme();
   const { showNotification } = useToastNotification();
 
   const handleUploadFile = async (uri: string): Promise<UploadResult> => {
@@ -57,7 +58,7 @@ export const FilesSection: FC<Props> = ({
       },
     });
 
-    return response;
+    return response.data;
   };
 
   const handleDeleteFile = async (fileName: string) => {
