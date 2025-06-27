@@ -6,8 +6,9 @@ import {
   ApartmentsScreen,
   NewApartmentScreen,
 } from "@screens/apartments";
+import { ApartmentsStackNavigatorParamList } from "@typings/navigation.types";
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<ApartmentsStackNavigatorParamList>();
 
 export const ApartmentsStackNavigator = () => (
   <Stack.Navigator

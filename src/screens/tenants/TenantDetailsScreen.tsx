@@ -1,5 +1,9 @@
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import { useCallback } from "react";
+import {
+  RouteProp,
+  useFocusEffect,
+  useNavigation,
+} from "@react-navigation/native";
+import { FC, useCallback } from "react";
 import { ScrollView, View } from "react-native";
 import {
   ActivityIndicator,
@@ -13,18 +17,36 @@ import { useQuery } from "@tanstack/react-query";
 import { HeaderLeft, HeaderTitle } from "@navigation/header";
 import { handleGetTenant } from "@services/tenants";
 import { DescriptionSection } from "@components/common";
+import { StackNavigationProp } from "@react-navigation/stack";
+import {
+  MainNavigationPropType,
+  TenantsStackNavigatorParamList,
+} from "@typings/navigation.types";
 
-export const TenantDetailsScreen = ({ route: { params } }) => {
-  const navigation = useNavigation();
+type NavigationPropType = StackNavigationProp<
+  TenantsStackNavigatorParamList,
+  "TenantDetails"
+>;
+
+type TenantDetailsScreenProps = RouteProp<
+  TenantsStackNavigatorParamList,
+  "TenantDetails"
+>;
+
+export const TenantDetailsScreen: FC<{ route: TenantDetailsScreenProps }> = ({
+  route: { params },
+}) => {
+  const navigation = useNavigation<NavigationPropType>();
   const theme = useTheme();
 
   useFocusEffect(
     useCallback(() => {
-      let parent = navigation;
-      while (parent && parent.getParent) {
+      let parent: MainNavigationPropType | null =
+        navigation as MainNavigationPropType;
+      while (parent && "getParent" in parent) {
         const newParent = parent.getParent();
         if (!newParent) break;
-        parent = newParent;
+        parent = newParent as MainNavigationPropType;
       }
 
       if (parent) {
@@ -40,7 +62,9 @@ export const TenantDetailsScreen = ({ route: { params } }) => {
           ),
         });
       }
-    }, [])
+
+      return () => {};
+    }, [navigation])
   );
 
   const { data, isLoading, isError, refetch } = useQuery({

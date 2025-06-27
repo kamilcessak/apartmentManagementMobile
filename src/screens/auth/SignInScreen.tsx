@@ -12,6 +12,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { HeaderTitle } from "@navigation/header";
 import { handleLogin } from "@services/auth";
+import {
+  MainNavigationPropType,
+  RootStackParamList,
+  UnauthenticatedStackParamList,
+} from "@typings/navigation.types";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 const schema = yup.object().shape({
   email: yup.string().required("Email is required"),
@@ -23,8 +29,15 @@ type FormValues = {
   password: string;
 };
 
+type CombinedParamList = UnauthenticatedStackParamList & RootStackParamList;
+
+type NavigationPropType = StackNavigationProp<
+  CombinedParamList,
+  "InitialScreen"
+>;
+
 export const SignInScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationPropType>();
   const headerHeight = useHeaderHeight();
 
   const {
@@ -37,11 +50,12 @@ export const SignInScreen = () => {
 
   useFocusEffect(
     useCallback(() => {
-      let parent = navigation;
-      while (parent && parent.getParent) {
+      let parent: MainNavigationPropType | null =
+        navigation as MainNavigationPropType;
+      while (parent && "getParent" in parent) {
         const newParent = parent.getParent();
         if (!newParent) break;
-        parent = newParent;
+        parent = newParent as MainNavigationPropType;
       }
 
       if (parent) {
@@ -49,7 +63,9 @@ export const SignInScreen = () => {
           headerTitle: () => <HeaderTitle children="Apartment Management" />,
         });
       }
-    }, [])
+
+      return () => {};
+    }, [navigation])
   );
 
   const { mutate, isPending } = useMutation({
@@ -64,9 +80,12 @@ export const SignInScreen = () => {
           topOffset: headerHeight + 16,
           onPress: () => Toast.hide(),
         });
-        navigation.replace(
-          isLandlord ? "AuthenticatedLandlordStack" : "AuthenticatedTenantStack"
-        );
+
+        if (isLandlord) {
+          navigation.replace("AuthenticatedLandlordStack", { screen: "Home" });
+        } else {
+          navigation.replace("AuthenticatedTenantStack", { screen: "Home" });
+        }
       } else {
         alert("Login failed");
       }
@@ -75,7 +94,7 @@ export const SignInScreen = () => {
       console.error(error);
       Toast.show({
         type: "error",
-        text1: error.response.data.error,
+        text1: error?.message || "Error occurred",
         topOffset: headerHeight + 16,
         onPress: () => Toast.hide(),
       });

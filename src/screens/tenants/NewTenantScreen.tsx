@@ -14,6 +14,11 @@ import { HeaderLeft, HeaderTitle } from "@navigation/header";
 import { useMutation } from "@tanstack/react-query";
 import { handleAddTenant } from "@services/tenants";
 import { useToastNotification } from "@hooks/useToastNotification";
+import { StackNavigationProp } from "@react-navigation/stack";
+import {
+  MainNavigationPropType,
+  TenantsStackNavigatorParamList,
+} from "@typings/navigation.types";
 
 const schema = yup.object().shape({
   firstName: yup.string().required("First name is required"),
@@ -31,17 +36,23 @@ type FormValues = {
   address: string;
 };
 
+type NavigationPropType = StackNavigationProp<
+  TenantsStackNavigatorParamList,
+  "NewTenant"
+>;
+
 export const NewTenantScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationPropType>();
   const { showNotification } = useToastNotification();
 
   useFocusEffect(
     useCallback(() => {
-      let parent = navigation;
-      while (parent && parent.getParent) {
+      let parent: MainNavigationPropType | null =
+        navigation as MainNavigationPropType;
+      while (parent && "getParent" in parent) {
         const newParent = parent.getParent();
         if (!newParent) break;
-        parent = newParent;
+        parent = newParent as MainNavigationPropType;
       }
 
       if (parent) {
@@ -65,7 +76,9 @@ export const NewTenantScreen = () => {
           ),
         });
       }
-    }, [])
+
+      return () => {};
+    }, [navigation])
   );
 
   const {

@@ -1,5 +1,5 @@
 import api from "@services/api.service";
-import { UserType } from "@types/user.types";
+import { UserType } from "@typings/user.types";
 
 type PatchProfileResponseType = UserType;
 

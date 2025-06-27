@@ -5,7 +5,7 @@ import React, {
   useContext,
   useState,
 } from "react";
-import { UserType } from "@types/user.types";
+import { UserType } from "@typings/user.types";
 
 export type AppContextType = {
   user: UserType | null;

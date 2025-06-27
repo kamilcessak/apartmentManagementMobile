@@ -3,7 +3,7 @@
   "compilerOptions": {
     "strict": true,
     "baseUrl": ".",
-    "typeRoots": ["./node_modules/@types", "src/types/theme.d.ts"],
+    "typeRoots": ["./node_modules/@types", "src/types"],
     "paths": {
       "@assets/*": ["src/assets/*"],
       "@components/*": ["src/components/*"],
@@ -14,7 +14,7 @@
       "@screens/*": ["src/screens/*"],
       "@services/*": ["src/services/*"],
       "@styles/*": ["src/styles/*"],
-      "@types/*": ["src/types/*"],
+      "@typings/*": ["src/types/*"],
       "@utils/*": ["src/utils/*"],
     }
   },

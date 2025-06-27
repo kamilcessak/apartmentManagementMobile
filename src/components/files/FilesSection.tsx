@@ -9,7 +9,7 @@ import {
 } from "expo-image-picker";
 
 import { useMutation } from "@tanstack/react-query";
-import { FileType } from "@types/files.types";
+import { FileType } from "@typings/files.types";
 import api from "@services/api.service";
 import { useToastNotification } from "@hooks/useToastNotification";
 import { FileItem } from "./FileItem";

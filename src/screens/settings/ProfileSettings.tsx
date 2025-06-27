@@ -14,6 +14,11 @@ import { HeaderLeft, HeaderTitle } from "@navigation/header";
 import { useMutation } from "@tanstack/react-query";
 import { handleUpdateProfile } from "@services/settings";
 import { useToastNotification } from "@hooks/useToastNotification";
+import { StackNavigationProp } from "@react-navigation/stack";
+import {
+  MainNavigationPropType,
+  SettingsStackNavigatorParamList,
+} from "@typings/navigation.types";
 
 const schema = yup.object().shape({
   firstName: yup.string(),
@@ -25,18 +30,24 @@ type FormValues = {
   lastName?: string;
 };
 
+type NavigationPropType = StackNavigationProp<
+  SettingsStackNavigatorParamList,
+  "ProfileSettings"
+>;
+
 export const ProfileSettings = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationPropType>();
   const theme = useTheme();
   const { showNotification } = useToastNotification();
 
   useFocusEffect(
     useCallback(() => {
-      let parent = navigation;
-      while (parent && parent.getParent) {
+      let parent: MainNavigationPropType | null =
+        navigation as MainNavigationPropType;
+      while (parent && "getParent" in parent) {
         const newParent = parent.getParent();
         if (!newParent) break;
-        parent = newParent;
+        parent = newParent as MainNavigationPropType;
       }
 
       if (parent) {
@@ -60,7 +71,9 @@ export const ProfileSettings = () => {
           ),
         });
       }
-    }, [])
+
+      return () => {};
+    }, [navigation])
   );
 
   const {

@@ -14,11 +14,21 @@ import { ErrorScreen, LoadingScreen } from "@screens/common";
 import { AddIcon, EmptyList } from "@components/common";
 import { IconButton, useTheme, Text } from "react-native-paper";
 import { useToastNotification } from "@hooks/useToastNotification";
+import { StackNavigationProp } from "@react-navigation/stack";
+import {
+  ApartmentsStackNavigatorParamList,
+  MainNavigationPropType,
+} from "@typings/navigation.types";
+
+type NavigationPropType = StackNavigationProp<
+  ApartmentsStackNavigatorParamList,
+  "Apartments"
+>;
 
 export const ApartmentsScreen = () => {
   const [isRefreshing, setisRefreshing] = useState(false);
 
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationPropType>();
   const theme = useTheme();
   const { showNotification } = useToastNotification();
 
@@ -29,11 +39,12 @@ export const ApartmentsScreen = () => {
 
   useFocusEffect(
     useCallback(() => {
-      let parent = navigation;
-      while (parent && parent.getParent) {
+      let parent: MainNavigationPropType | null =
+        navigation as MainNavigationPropType;
+      while (parent && "getParent" in parent) {
         const newParent = parent.getParent();
         if (!newParent) break;
-        parent = newParent;
+        parent = newParent as MainNavigationPropType;
       }
 
       if (parent) {
@@ -44,8 +55,9 @@ export const ApartmentsScreen = () => {
       }
 
       refetch();
+
       return () => {};
-    }, [])
+    }, [navigation])
   );
 
   const onRefresh = () => {
@@ -67,7 +79,6 @@ export const ApartmentsScreen = () => {
   if (isError) {
     return <ErrorScreen onRetry={refetch} />;
   }
-  console.log({ data });
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>

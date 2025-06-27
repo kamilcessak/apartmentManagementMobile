@@ -5,18 +5,29 @@ import { ScrollView, View } from "react-native";
 import { HeaderTitle } from "@navigation/header";
 import { Button, useTheme } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { StackNavigationProp } from "@react-navigation/stack";
+import {
+  MainNavigationPropType,
+  RootStackParamList,
+  SettingsStackNavigatorParamList,
+} from "@typings/navigation.types";
+
+type CombinedParamList = SettingsStackNavigatorParamList & RootStackParamList;
+
+type NavigationPropType = StackNavigationProp<CombinedParamList, "Settings">;
 
 export const SettingsScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationPropType>();
   const theme = useTheme();
 
   useFocusEffect(
     useCallback(() => {
-      let parent = navigation;
-      while (parent && parent.getParent) {
+      let parent: MainNavigationPropType | null =
+        navigation as MainNavigationPropType;
+      while (parent && "getParent" in parent) {
         const newParent = parent.getParent();
         if (!newParent) break;
-        parent = newParent;
+        parent = newParent as MainNavigationPropType;
       }
 
       if (parent) {
@@ -25,12 +36,14 @@ export const SettingsScreen = () => {
           headerTitle: () => <HeaderTitle children="Ustawienia" />,
         });
       }
-    }, [])
+
+      return () => {};
+    }, [navigation])
   );
 
   const signOut = () => {
     AsyncStorage.setItem("token", "");
-    navigation.replace("UnauthenticatedStack");
+    navigation.replace("UnauthenticatedStack", { screen: "InitialScreen" });
   };
 
   return (

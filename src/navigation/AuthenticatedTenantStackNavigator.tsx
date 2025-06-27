@@ -3,13 +3,18 @@ import { IconButton, useTheme } from "react-native-paper";
 
 import { HomeScreen } from "@screens/HomeScreen";
 import { CustomMD3Theme } from "@styles/theme";
-import { SettingsStackNavigator } from "./SettingsStackNavigator";
 import { TenantRentalScreen } from "@screens/rentals";
+import { TenantStackParamList } from "@typings/navigation.types";
 
-const Tab = createBottomTabNavigator();
+import { SettingsStackNavigator } from "./SettingsStackNavigator";
+
+const Tab = createBottomTabNavigator<TenantStackParamList>();
 
 export const AuthenticatedTenantStackNavigator = () => {
   const theme = useTheme<CustomMD3Theme>();
+
+  const iconColor = (focused: boolean) =>
+    focused ? theme.colors.customPrimary : theme.colors.graySecondary;
 
   return (
     <Tab.Navigator
@@ -28,11 +33,7 @@ export const AuthenticatedTenantStackNavigator = () => {
             <IconButton
               icon="home"
               size={size}
-              iconColor={
-                focused
-                  ? theme.colors.customPrimary
-                  : theme.colors.graySecondary
-              }
+              iconColor={iconColor(focused)}
             />
           ),
         }}
@@ -42,15 +43,7 @@ export const AuthenticatedTenantStackNavigator = () => {
         component={TenantRentalScreen}
         options={{
           tabBarIcon: ({ focused, size }) => (
-            <IconButton
-              icon="cog"
-              size={size}
-              iconColor={
-                focused
-                  ? theme.colors.customPrimary
-                  : theme.colors.graySecondary
-              }
-            />
+            <IconButton icon="cog" size={size} iconColor={iconColor(focused)} />
           ),
         }}
       />
@@ -59,15 +52,7 @@ export const AuthenticatedTenantStackNavigator = () => {
         component={SettingsStackNavigator}
         options={{
           tabBarIcon: ({ focused, size }) => (
-            <IconButton
-              icon="cog"
-              size={size}
-              iconColor={
-                focused
-                  ? theme.colors.customPrimary
-                  : theme.colors.graySecondary
-              }
-            />
+            <IconButton icon="cog" size={size} iconColor={iconColor(focused)} />
           ),
         }}
       />

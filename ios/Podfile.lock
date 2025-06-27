@@ -327,6 +327,31 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - ExpoScreenOrientation (8.1.7):
+    - DoubleConversion
+    - ExpoModulesCore
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.11.18.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-hermes
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - ExpoSplashScreen (0.30.9):
     - ExpoModulesCore
   - ExpoSymbols (0.4.5):
@@ -2470,6 +2495,7 @@ DEPENDENCIES:
   - ExpoLinking (from `../node_modules/expo-linking/ios`)
   - ExpoLocation (from `../node_modules/expo-location/ios`)
   - ExpoModulesCore (from `../node_modules/expo-modules-core`)
+  - ExpoScreenOrientation (from `../node_modules/expo-screen-orientation/ios`)
   - ExpoSplashScreen (from `../node_modules/expo-splash-screen/ios`)
   - ExpoSymbols (from `../node_modules/expo-symbols/ios`)
   - ExpoSystemUI (from `../node_modules/expo-system-ui/ios`)
@@ -2616,6 +2642,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-location/ios"
   ExpoModulesCore:
     :path: "../node_modules/expo-modules-core"
+  ExpoScreenOrientation:
+    :path: "../node_modules/expo-screen-orientation/ios"
   ExpoSplashScreen:
     :path: "../node_modules/expo-splash-screen/ios"
   ExpoSymbols:
@@ -2807,6 +2835,7 @@ SPEC CHECKSUMS:
   ExpoLinking: 5d151d4a497d7e375308602f0a89b4e8acf7b5f8
   ExpoLocation: afc197fce1045ac7325f095b0c149308e1653aab
   ExpoModulesCore: e2e363bcdee87b46f858586d1887ebb215582001
+  ExpoScreenOrientation: 2fb6a3c6fd118a1508f68afb05474cd2964025f5
   ExpoSplashScreen: 37e2fd371d4b93215f86a81d8cad3e7b69287e42
   ExpoSymbols: bd4e20b0b6a9dbacc31dd7c861e0d6d01b56e1f2
   ExpoSystemUI: 5dce97654754330ba6e2c39e7242c5d71c8d9952

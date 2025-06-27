@@ -1,23 +1,31 @@
 import React, { useCallback, useMemo } from "react";
 import { View, ScrollView } from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
 import { useTheme, Text, Button, Icon } from "react-native-paper";
 
 import { HeaderTitle } from "@navigation/header";
 import { useUserData } from "@hooks/useUserData";
+import {
+  LandlordStackParamList,
+  MainNavigationPropType,
+} from "@typings/navigation.types";
+
+type NavigationPropType = StackNavigationProp<LandlordStackParamList, "Home">;
 
 export const HomeScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationPropType>();
   const theme = useTheme();
   const { data } = useUserData();
 
   useFocusEffect(
     useCallback(() => {
-      let parent = navigation;
-      while (parent && parent.getParent) {
+      let parent: MainNavigationPropType | null =
+        navigation as MainNavigationPropType;
+      while (parent && "getParent" in parent) {
         const newParent = parent.getParent();
         if (!newParent) break;
-        parent = newParent;
+        parent = newParent as MainNavigationPropType;
       }
 
       if (parent) {
@@ -26,7 +34,7 @@ export const HomeScreen = () => {
           headerTitle: () => <HeaderTitle children="Strona główna" />,
         });
       }
-    }, [])
+    }, [navigation])
   );
 
   const quickActions = [

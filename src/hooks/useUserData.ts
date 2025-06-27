@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 import api from "@services/api.service";
-import { UserType } from "@types/user.types";
+import { UserType } from "@typings/user.types";
 
 export const useUserData = () => {
   const fetchUser = async () => {

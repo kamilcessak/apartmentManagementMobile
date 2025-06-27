@@ -5,7 +5,7 @@ import {
   useNavigation,
 } from "@react-navigation/native";
 import { useCallback } from "react";
-import { Button, TextInput, useTheme } from "react-native-paper";
+import { Button, TextInput } from "react-native-paper";
 import * as yup from "yup";
 import {
   requestForegroundPermissionsAsync,
@@ -19,8 +19,13 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
 import { FilesSection } from "@components/files";
 import { handleCreateApartment } from "@services/apartments";
-import { CreateApartmentType } from "@types/apartment.types";
+import { CreateApartmentType } from "@typings/apartment.types";
 import { useToastNotification } from "@hooks/useToastNotification";
+import { StackNavigationProp } from "@react-navigation/stack";
+import {
+  ApartmentsStackNavigatorParamList,
+  MainNavigationPropType,
+} from "@typings/navigation.types";
 
 const schema = yup.object().shape({
   address: yup.string().required("Address is required"),
@@ -37,19 +42,24 @@ const schema = yup.object().shape({
 
 type FormValues = CreateApartmentType;
 
+type NavigationPropType = StackNavigationProp<
+  ApartmentsStackNavigatorParamList,
+  "NewApartment"
+>;
+
 export const NewApartmentScreen = () => {
-  const navigation = useNavigation();
-  const theme = useTheme();
+  const navigation = useNavigation<NavigationPropType>();
   const { showNotification } = useToastNotification();
   const queryClient = useQueryClient();
 
   useFocusEffect(
     useCallback(() => {
-      let parent = navigation;
-      while (parent && parent.getParent) {
+      let parent: MainNavigationPropType | null =
+        navigation as MainNavigationPropType;
+      while (parent && "getParent" in parent) {
         const newParent = parent.getParent();
         if (!newParent) break;
-        parent = newParent;
+        parent = newParent as MainNavigationPropType;
       }
 
       if (parent) {
@@ -73,7 +83,9 @@ export const NewApartmentScreen = () => {
           ),
         });
       }
-    }, [])
+
+      return () => {};
+    }, [navigation])
   );
 
   const {

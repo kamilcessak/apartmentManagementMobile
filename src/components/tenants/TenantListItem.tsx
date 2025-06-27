@@ -5,7 +5,7 @@ import styled from "styled-components/native";
 import { useNavigation } from "@react-navigation/native";
 
 import { getRandomRgbaColor } from "@utils/generateRandomColor";
-import { TenantType } from "@types/tenant.types";
+import { TenantType } from "@typings/tenant.types";
 
 const Wrapper = styled.View`
   border-width: 1px;

@@ -1,11 +1,21 @@
 import React, { FC, useState } from "react";
 import { View } from "react-native";
 import { Divider, useTheme, Text } from "react-native-paper";
-import { DescriptionItem } from "./DescriptionItem";
-import { FileItem } from "@components/files";
 import { useMutation } from "@tanstack/react-query";
+import styled from "styled-components/native";
+
+import { FileItem } from "@components/files";
 import { handleGetFile } from "@services/files";
 import { ImageModal } from "@components/modals";
+
+import { DescriptionItem } from "./DescriptionItem";
+
+const ContentWrapper = styled.View`
+  width: 100%;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+`;
 
 type Props = {
   title: string;
@@ -35,14 +45,7 @@ export const DescriptionSection: FC<Props> = ({ title, data }) => {
   const renderContent = () => {
     if (isSectionWithFiles) {
       return (
-        <View
-          style={{
-            width: "100%",
-            flexDirection: "row",
-            flexWrap: "wrap",
-            justifyContent: "space-between",
-          }}
-        >
+        <ContentWrapper>
           {data[0].files?.map((e, i) => (
             <FileItem
               key={`file-${e}-item-${i}`}
@@ -50,7 +53,7 @@ export const DescriptionSection: FC<Props> = ({ title, data }) => {
               handleShowFile={() => getFile(e)}
             />
           ))}
-        </View>
+        </ContentWrapper>
       );
     } else {
       return (

@@ -1,23 +1,25 @@
 import { FC } from "react";
-import { TouchableOpacity } from "react-native";
 import { IconButton } from "react-native-paper";
+import styled from "styled-components/native";
+
+import { DefaultTheme } from "@typings/styledTheme";
+
+const Wrapper = styled.TouchableOpacity`
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  border-width: 1px;
+  border-radius: 50px;
+  border-color: ${({ theme }: { theme: DefaultTheme }) =>
+    theme.colors.customBlack};
+`;
 
 type Props = {
   onPress: () => void;
 };
 
 export const AddIcon: FC<Props> = ({ onPress }) => (
-  <TouchableOpacity
-    onPress={onPress}
-    style={{
-      position: "absolute",
-      bottom: 16,
-      right: 16,
-      borderWidth: 1,
-      borderRadius: 50,
-      borderColor: "black",
-    }}
-  >
+  <Wrapper onPress={onPress}>
     <IconButton icon="plus" size={32} style={{ margin: 0 }} />
-  </TouchableOpacity>
+  </Wrapper>
 );

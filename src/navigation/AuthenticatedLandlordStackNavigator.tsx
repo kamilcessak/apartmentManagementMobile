@@ -2,15 +2,20 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { IconButton, useTheme } from "react-native-paper";
 
 import { HomeScreen } from "@screens/HomeScreen";
+import { CustomMD3Theme } from "@styles/theme";
+import { LandlordStackParamList } from "@typings/navigation.types";
+
+import { SettingsStackNavigator } from "./SettingsStackNavigator";
 import { TenantsStackNavigator } from "./TenantsStackNavigator";
 import { ApartmentsStackNavigator } from "./ApartmentsStackNavigator";
-import { CustomMD3Theme } from "@styles/theme";
-import { SettingsStackNavigator } from "./SettingsStackNavigator";
 
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator<LandlordStackParamList>();
 
 export const AuthenticatedLandlordStackNavigator = () => {
   const theme = useTheme<CustomMD3Theme>();
+
+  const iconColor = (focused: boolean) =>
+    focused ? theme.colors.customPrimary : theme.colors.graySecondary;
 
   return (
     <Tab.Navigator
@@ -30,11 +35,7 @@ export const AuthenticatedLandlordStackNavigator = () => {
             <IconButton
               icon="home"
               size={size}
-              iconColor={
-                focused
-                  ? theme.colors.customPrimary
-                  : theme.colors.graySecondary
-              }
+              iconColor={iconColor(focused)}
             />
           ),
         }}
@@ -47,11 +48,7 @@ export const AuthenticatedLandlordStackNavigator = () => {
             <IconButton
               icon="human-male-female"
               size={size}
-              iconColor={
-                focused
-                  ? theme.colors.customPrimary
-                  : theme.colors.graySecondary
-              }
+              iconColor={iconColor(focused)}
             />
           ),
         }}
@@ -64,11 +61,7 @@ export const AuthenticatedLandlordStackNavigator = () => {
             <IconButton
               icon="home-city-outline"
               size={size}
-              iconColor={
-                focused
-                  ? theme.colors.customPrimary
-                  : theme.colors.graySecondary
-              }
+              iconColor={iconColor(focused)}
             />
           ),
         }}
@@ -78,15 +71,7 @@ export const AuthenticatedLandlordStackNavigator = () => {
         component={SettingsStackNavigator}
         options={{
           tabBarIcon: ({ focused, size }) => (
-            <IconButton
-              icon="cog"
-              size={size}
-              iconColor={
-                focused
-                  ? theme.colors.customPrimary
-                  : theme.colors.graySecondary
-              }
-            />
+            <IconButton icon="cog" size={size} iconColor={iconColor(focused)} />
           ),
         }}
       />

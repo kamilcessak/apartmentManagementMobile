@@ -62,6 +62,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",
+    "@react-navigation/stack": "^7.4.2",
     "@tanstack/eslint-plugin-query": "^5.73.3",
     "@testing-library/react-hooks": "^8.0.1",
     "@testing-library/react-native": "^13.2.0",

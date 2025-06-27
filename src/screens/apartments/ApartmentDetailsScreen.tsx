@@ -1,6 +1,10 @@
 import { ScrollView, View } from "react-native";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import { useCallback } from "react";
+import {
+  RouteProp,
+  useFocusEffect,
+  useNavigation,
+} from "@react-navigation/native";
+import { FC, useCallback } from "react";
 import { useTheme } from "react-native-paper";
 
 import { HeaderLeft, HeaderTitle } from "@navigation/header";
@@ -8,18 +12,36 @@ import { useQuery } from "@tanstack/react-query";
 import { handleGetApartment } from "@services/apartments";
 import { ErrorScreen, LoadingScreen } from "@screens/common";
 import { DescriptionSection } from "@components/common";
+import { StackNavigationProp } from "@react-navigation/stack";
+import {
+  ApartmentsStackNavigatorParamList,
+  MainNavigationPropType,
+} from "@typings/navigation.types";
 
-export const ApartmentDetailsScreen = (props) => {
-  const navigation = useNavigation();
+type NavigationPropType = StackNavigationProp<
+  ApartmentsStackNavigatorParamList,
+  "ApartmentDetails"
+>;
+
+type TenantDetailsScreenProps = RouteProp<
+  ApartmentsStackNavigatorParamList,
+  "ApartmentDetails"
+>;
+
+export const ApartmentDetailsScreen: FC<{ route: TenantDetailsScreenProps }> = (
+  props
+) => {
+  const navigation = useNavigation<NavigationPropType>();
   const theme = useTheme();
 
   useFocusEffect(
     useCallback(() => {
-      let parent = navigation;
-      while (parent && parent.getParent) {
+      let parent: MainNavigationPropType | null =
+        navigation as MainNavigationPropType;
+      while (parent && "getParent" in parent) {
         const newParent = parent.getParent();
         if (!newParent) break;
-        parent = newParent;
+        parent = newParent as MainNavigationPropType;
       }
 
       if (parent) {
@@ -32,7 +54,9 @@ export const ApartmentDetailsScreen = (props) => {
           ),
         });
       }
-    }, [])
+
+      return () => {};
+    }, [navigation])
   );
 
   const { data, isLoading, isError, refetch } = useQuery({

@@ -4,7 +4,7 @@ import {
   CreateApartmentType,
   GetApartmentResponseType,
   GetApartmentsResponseType,
-} from "@types/apartment.types";
+} from "@typings/apartment.types";
 
 export const handleGetApartments = async () => {
   try {

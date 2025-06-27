@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import { RefreshControl, ScrollView, View } from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { useQuery } from "@tanstack/react-query";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 import { HeaderTitle } from "@navigation/header";
 import { handleGetTenants } from "@services/tenants";
@@ -9,20 +10,30 @@ import { TenantListItem } from "@components/tenants";
 import { ErrorScreen, LoadingScreen } from "@screens/common";
 import { AddIcon, EmptyList } from "@components/common";
 import { useToastNotification } from "@hooks/useToastNotification";
+import {
+  MainNavigationPropType,
+  TenantsStackNavigatorParamList,
+} from "@typings/navigation.types";
+
+type NavigationPropType = StackNavigationProp<
+  TenantsStackNavigatorParamList,
+  "Tenants"
+>;
 
 export const TenantsScreen = () => {
   const [isRefreshing, setisRefreshing] = useState(false);
 
   const { showNotification } = useToastNotification();
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationPropType>();
 
   useFocusEffect(
     useCallback(() => {
-      let parent = navigation;
-      while (parent && parent.getParent) {
+      let parent: MainNavigationPropType | null =
+        navigation as MainNavigationPropType;
+      while (parent && "getParent" in parent) {
         const newParent = parent.getParent();
         if (!newParent) break;
-        parent = newParent;
+        parent = newParent as MainNavigationPropType;
       }
 
       if (parent) {
@@ -31,7 +42,8 @@ export const TenantsScreen = () => {
           headerLeft: () => null,
         });
       }
-    }, [])
+      return () => {};
+    }, [navigation])
   );
 
   const { data, isLoading, isError, refetch } = useQuery({

@@ -6,8 +6,9 @@ import {
   TenantDetailsScreen,
   TenantsScreen,
 } from "@screens/tenants";
+import { TenantsStackNavigatorParamList } from "@typings/navigation.types";
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<TenantsStackNavigatorParamList>();
 
 export const TenantsStackNavigator = () => (
   <Stack.Navigator

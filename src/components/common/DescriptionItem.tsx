@@ -1,6 +1,13 @@
 import { FC } from "react";
-import { View } from "react-native";
 import { Icon, Text } from "react-native-paper";
+import styled from "styled-components/native";
+
+const Wrapper = styled.View`
+  flex: 1;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+`;
 
 type Props = {
   icon?: string;
@@ -19,14 +26,7 @@ export const DescriptionItem: FC<Props> = ({
   disableNumberOfLines,
 }) => {
   return (
-    <View
-      style={{
-        flex: 1,
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 8,
-      }}
-    >
+    <Wrapper>
       {icon ? <Icon source={icon} size={24} /> : null}
       {label ? <Text variant="labelLarge">{label}</Text> : null}
       <Text
@@ -36,6 +36,6 @@ export const DescriptionItem: FC<Props> = ({
       >
         {value}
       </Text>
-    </View>
+    </Wrapper>
   );
 };

@@ -6,18 +6,32 @@ import { Button, Text } from "react-native-paper";
 
 import { HeaderTitle } from "@navigation/header";
 import { useUserData } from "@hooks/useUserData";
+import { StackNavigationProp } from "@react-navigation/stack";
+import {
+  MainNavigationPropType,
+  RootStackParamList,
+  UnauthenticatedStackParamList,
+} from "@typings/navigation.types";
+
+type CombinedParamList = UnauthenticatedStackParamList & RootStackParamList;
+
+type NavigationPropType = StackNavigationProp<
+  CombinedParamList,
+  "InitialScreen"
+>;
 
 export const InitialScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationPropType>();
   const { data, isLoading } = useUserData();
 
   useFocusEffect(
     useCallback(() => {
-      let parent = navigation;
-      while (parent && parent.getParent) {
+      let parent: MainNavigationPropType | null =
+        navigation as MainNavigationPropType;
+      while (parent && "getParent" in parent) {
         const newParent = parent.getParent();
         if (!newParent) break;
-        parent = newParent;
+        parent = newParent as MainNavigationPropType;
       }
 
       if (parent) {
@@ -25,17 +39,19 @@ export const InitialScreen = () => {
           headerTitle: () => <HeaderTitle children="Apartment Management" />,
         });
       }
-    }, [])
+
+      return () => {};
+    }, [navigation])
   );
 
   const getToken = async () => {
     const token = await AsyncStorage.getItem("token");
-    if (token?.length && Object.keys(data)?.length) {
-      navigation.replace(
-        data.role === "Landlord"
-          ? "AuthenticatedLandlordStack"
-          : "AuthenticatedTenantStack"
-      );
+    if (token?.length && data && Object.keys(data)?.length) {
+      if (data?.role === "Landlord") {
+        navigation.replace("AuthenticatedLandlordStack", { screen: "Home" });
+      } else {
+        navigation.replace("AuthenticatedTenantStack", { screen: "Home" });
+      }
     }
   };
 

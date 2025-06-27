@@ -1,6 +1,6 @@
 import api from "@services/api.service";
 
-import { GetTenantsResponseType, TenantType } from "@types/tenant.types";
+import { GetTenantsResponseType, TenantType } from "@typings/tenant.types";
 
 type AddTenantType = {
   firstName: string;
