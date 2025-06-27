@@ -1,7 +1,6 @@
 import { Image, ScrollView, View } from "react-native";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { useMutation } from "@tanstack/react-query";
-import { useCallback } from "react";
 import Toast from "react-native-toast-message";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { TextInput, Button } from "react-native-paper";
@@ -10,14 +9,13 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { HeaderTitle } from "@navigation/header";
 import { handleLogin } from "@services/auth";
 import {
-  MainNavigationPropType,
   RootStackParamList,
   UnauthenticatedStackParamList,
 } from "@typings/navigation.types";
 import { StackNavigationProp } from "@react-navigation/stack";
+import useHeaderOptions from "@hooks/useHeaderOptions";
 
 const schema = yup.object().shape({
   email: yup.string().required("Email is required"),
@@ -40,6 +38,14 @@ export const SignInScreen = () => {
   const navigation = useNavigation<NavigationPropType>();
   const headerHeight = useHeaderHeight();
 
+  useHeaderOptions(navigation, {
+    title: "Logowanie",
+    headerLeftConfig: {
+      canGoBack: navigation.canGoBack(),
+      goBackAction: navigation.goBack,
+    },
+  });
+
   const {
     handleSubmit,
     setValue,
@@ -47,26 +53,6 @@ export const SignInScreen = () => {
   } = useForm<FormValues>({
     resolver: yupResolver(schema),
   });
-
-  useFocusEffect(
-    useCallback(() => {
-      let parent: MainNavigationPropType | null =
-        navigation as MainNavigationPropType;
-      while (parent && "getParent" in parent) {
-        const newParent = parent.getParent();
-        if (!newParent) break;
-        parent = newParent as MainNavigationPropType;
-      }
-
-      if (parent) {
-        parent.setOptions({
-          headerTitle: () => <HeaderTitle children="Apartment Management" />,
-        });
-      }
-
-      return () => {};
-    }, [navigation])
-  );
 
   const { mutate, isPending } = useMutation({
     mutationFn: handleLogin,

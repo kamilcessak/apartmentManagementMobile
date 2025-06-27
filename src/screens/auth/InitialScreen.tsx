@@ -1,17 +1,16 @@
 import { View, Image } from "react-native";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import { useCallback, useEffect } from "react";
+import { useNavigation } from "@react-navigation/native";
+import { useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Button, Text } from "react-native-paper";
 
-import { HeaderTitle } from "@navigation/header";
 import { useUserData } from "@hooks/useUserData";
 import { StackNavigationProp } from "@react-navigation/stack";
 import {
-  MainNavigationPropType,
   RootStackParamList,
   UnauthenticatedStackParamList,
 } from "@typings/navigation.types";
+import useHeaderOptions from "@hooks/useHeaderOptions";
 
 type CombinedParamList = UnauthenticatedStackParamList & RootStackParamList;
 
@@ -24,25 +23,9 @@ export const InitialScreen = () => {
   const navigation = useNavigation<NavigationPropType>();
   const { data, isLoading } = useUserData();
 
-  useFocusEffect(
-    useCallback(() => {
-      let parent: MainNavigationPropType | null =
-        navigation as MainNavigationPropType;
-      while (parent && "getParent" in parent) {
-        const newParent = parent.getParent();
-        if (!newParent) break;
-        parent = newParent as MainNavigationPropType;
-      }
-
-      if (parent) {
-        parent.setOptions({
-          headerTitle: () => <HeaderTitle children="Apartment Management" />,
-        });
-      }
-
-      return () => {};
-    }, [navigation])
-  );
+  useHeaderOptions(navigation, {
+    title: "Apartment Management",
+  });
 
   const getToken = async () => {
     const token = await AsyncStorage.getItem("token");

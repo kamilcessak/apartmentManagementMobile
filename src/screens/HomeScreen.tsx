@@ -1,15 +1,12 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useMemo } from "react";
 import { View, ScrollView } from "react-native";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useTheme, Text, Button, Icon } from "react-native-paper";
 
-import { HeaderTitle } from "@navigation/header";
 import { useUserData } from "@hooks/useUserData";
-import {
-  LandlordStackParamList,
-  MainNavigationPropType,
-} from "@typings/navigation.types";
+import { LandlordStackParamList } from "@typings/navigation.types";
+import useHeaderOptions from "@hooks/useHeaderOptions";
 
 type NavigationPropType = StackNavigationProp<LandlordStackParamList, "Home">;
 
@@ -18,24 +15,9 @@ export const HomeScreen = () => {
   const theme = useTheme();
   const { data } = useUserData();
 
-  useFocusEffect(
-    useCallback(() => {
-      let parent: MainNavigationPropType | null =
-        navigation as MainNavigationPropType;
-      while (parent && "getParent" in parent) {
-        const newParent = parent.getParent();
-        if (!newParent) break;
-        parent = newParent as MainNavigationPropType;
-      }
-
-      if (parent) {
-        parent.setOptions({
-          headerLeft: () => null,
-          headerTitle: () => <HeaderTitle children="Strona główna" />,
-        });
-      }
-    }, [navigation])
-  );
+  useHeaderOptions(navigation, {
+    title: "Strona główna",
+  });
 
   const quickActions = [
     {

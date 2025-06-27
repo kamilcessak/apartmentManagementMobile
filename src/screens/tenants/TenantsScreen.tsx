@@ -1,19 +1,16 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { RefreshControl, ScrollView, View } from "react-native";
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { useQuery } from "@tanstack/react-query";
 import { StackNavigationProp } from "@react-navigation/stack";
 
-import { HeaderTitle } from "@navigation/header";
 import { handleGetTenants } from "@services/tenants";
 import { TenantListItem } from "@components/tenants";
 import { ErrorScreen, LoadingScreen } from "@screens/common";
 import { AddIcon, EmptyList } from "@components/common";
 import { useToastNotification } from "@hooks/useToastNotification";
-import {
-  MainNavigationPropType,
-  TenantsStackNavigatorParamList,
-} from "@typings/navigation.types";
+import { TenantsStackNavigatorParamList } from "@typings/navigation.types";
+import useHeaderOptions from "@hooks/useHeaderOptions";
 
 type NavigationPropType = StackNavigationProp<
   TenantsStackNavigatorParamList,
@@ -26,25 +23,9 @@ export const TenantsScreen = () => {
   const { showNotification } = useToastNotification();
   const navigation = useNavigation<NavigationPropType>();
 
-  useFocusEffect(
-    useCallback(() => {
-      let parent: MainNavigationPropType | null =
-        navigation as MainNavigationPropType;
-      while (parent && "getParent" in parent) {
-        const newParent = parent.getParent();
-        if (!newParent) break;
-        parent = newParent as MainNavigationPropType;
-      }
-
-      if (parent) {
-        parent.setOptions({
-          headerTitle: () => <HeaderTitle children="Twoi najemcy" />,
-          headerLeft: () => null,
-        });
-      }
-      return () => {};
-    }, [navigation])
-  );
+  useHeaderOptions(navigation, {
+    title: "Twoi najemcy",
+  });
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryFn: handleGetTenants,

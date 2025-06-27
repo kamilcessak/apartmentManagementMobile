@@ -1,24 +1,16 @@
-import { useCallback } from "react";
 import { ScrollView, View } from "react-native";
-import {
-  useNavigation,
-  useFocusEffect,
-  CommonActions,
-} from "@react-navigation/native";
+import { useNavigation, CommonActions } from "@react-navigation/native";
 import { Button, TextInput } from "react-native-paper";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 
-import { HeaderLeft, HeaderTitle } from "@navigation/header";
 import { useMutation } from "@tanstack/react-query";
 import { handleAddTenant } from "@services/tenants";
 import { useToastNotification } from "@hooks/useToastNotification";
 import { StackNavigationProp } from "@react-navigation/stack";
-import {
-  MainNavigationPropType,
-  TenantsStackNavigatorParamList,
-} from "@typings/navigation.types";
+import { TenantsStackNavigatorParamList } from "@typings/navigation.types";
+import useHeaderOptions from "@hooks/useHeaderOptions";
 
 const schema = yup.object().shape({
   firstName: yup.string().required("First name is required"),
@@ -45,41 +37,21 @@ export const NewTenantScreen = () => {
   const navigation = useNavigation<NavigationPropType>();
   const { showNotification } = useToastNotification();
 
-  useFocusEffect(
-    useCallback(() => {
-      let parent: MainNavigationPropType | null =
-        navigation as MainNavigationPropType;
-      while (parent && "getParent" in parent) {
-        const newParent = parent.getParent();
-        if (!newParent) break;
-        parent = newParent as MainNavigationPropType;
-      }
-
-      if (parent) {
-        parent.setOptions({
-          headerTitle: () => (
-            <HeaderTitle children="Nowy najemca" isLeftVisible />
-          ),
-          headerLeft: () => (
-            <HeaderLeft
-              canGoBack
-              goBack={() => {
-                navigation.dispatch(
-                  CommonActions.reset({
-                    index: 0,
-                    routes: [{ name: "Tenants" }],
-                  })
-                );
-                navigation.goBack();
-              }}
-            />
-          ),
-        });
-      }
-
-      return () => {};
-    }, [navigation])
-  );
+  useHeaderOptions(navigation, {
+    title: "Nowy najemca",
+    headerLeftConfig: {
+      canGoBack: navigation.canGoBack(),
+      goBackAction: () => {
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{ name: "Tenants" }],
+          })
+        );
+        navigation.goBack();
+      },
+    },
+  });
 
   const {
     handleSubmit,

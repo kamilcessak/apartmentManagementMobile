@@ -1,10 +1,5 @@
 import { ScrollView, KeyboardAvoidingView, Platform } from "react-native";
-import {
-  CommonActions,
-  useFocusEffect,
-  useNavigation,
-} from "@react-navigation/native";
-import { useCallback } from "react";
+import { CommonActions, useNavigation } from "@react-navigation/native";
 import { Button, TextInput } from "react-native-paper";
 import * as yup from "yup";
 import {
@@ -13,7 +8,6 @@ import {
   reverseGeocodeAsync,
 } from "expo-location";
 
-import { HeaderLeft, HeaderTitle } from "@navigation/header";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
@@ -22,10 +16,8 @@ import { handleCreateApartment } from "@services/apartments";
 import { CreateApartmentType } from "@typings/apartment.types";
 import { useToastNotification } from "@hooks/useToastNotification";
 import { StackNavigationProp } from "@react-navigation/stack";
-import {
-  ApartmentsStackNavigatorParamList,
-  MainNavigationPropType,
-} from "@typings/navigation.types";
+import { ApartmentsStackNavigatorParamList } from "@typings/navigation.types";
+import useHeaderOptions from "@hooks/useHeaderOptions";
 
 const schema = yup.object().shape({
   address: yup.string().required("Address is required"),
@@ -52,41 +44,21 @@ export const NewApartmentScreen = () => {
   const { showNotification } = useToastNotification();
   const queryClient = useQueryClient();
 
-  useFocusEffect(
-    useCallback(() => {
-      let parent: MainNavigationPropType | null =
-        navigation as MainNavigationPropType;
-      while (parent && "getParent" in parent) {
-        const newParent = parent.getParent();
-        if (!newParent) break;
-        parent = newParent as MainNavigationPropType;
-      }
-
-      if (parent) {
-        parent.setOptions({
-          headerLeft: () => (
-            <HeaderLeft
-              canGoBack
-              goBack={() => {
-                navigation.dispatch(
-                  CommonActions.reset({
-                    index: 0,
-                    routes: [{ name: "Apartments" }],
-                  })
-                );
-                navigation.goBack();
-              }}
-            />
-          ),
-          headerTitle: () => (
-            <HeaderTitle children="Nowy apartament" isLeftVisible />
-          ),
-        });
-      }
-
-      return () => {};
-    }, [navigation])
-  );
+  useHeaderOptions(navigation, {
+    title: "Nowy apartament",
+    headerLeftConfig: {
+      canGoBack: navigation.canGoBack(),
+      goBackAction: () => {
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{ name: "Apartments" }],
+          })
+        );
+        navigation.goBack();
+      },
+    },
+  });
 
   const {
     handleSubmit,

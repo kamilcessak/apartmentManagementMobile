@@ -1,24 +1,16 @@
-import {
-  CommonActions,
-  useFocusEffect,
-  useNavigation,
-} from "@react-navigation/native";
-import { useCallback } from "react";
+import { CommonActions, useNavigation } from "@react-navigation/native";
 import { KeyboardAvoidingView, ScrollView } from "react-native";
 import { Button, TextInput, useTheme } from "react-native-paper";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 
-import { HeaderLeft, HeaderTitle } from "@navigation/header";
 import { useMutation } from "@tanstack/react-query";
 import { handleUpdateProfile } from "@services/settings";
 import { useToastNotification } from "@hooks/useToastNotification";
 import { StackNavigationProp } from "@react-navigation/stack";
-import {
-  MainNavigationPropType,
-  SettingsStackNavigatorParamList,
-} from "@typings/navigation.types";
+import { SettingsStackNavigatorParamList } from "@typings/navigation.types";
+import useHeaderOptions from "@hooks/useHeaderOptions";
 
 const schema = yup.object().shape({
   firstName: yup.string(),
@@ -40,41 +32,21 @@ export const ProfileSettings = () => {
   const theme = useTheme();
   const { showNotification } = useToastNotification();
 
-  useFocusEffect(
-    useCallback(() => {
-      let parent: MainNavigationPropType | null =
-        navigation as MainNavigationPropType;
-      while (parent && "getParent" in parent) {
-        const newParent = parent.getParent();
-        if (!newParent) break;
-        parent = newParent as MainNavigationPropType;
-      }
-
-      if (parent) {
-        parent.setOptions({
-          headerLeft: () => (
-            <HeaderLeft
-              canGoBack
-              goBack={() => {
-                navigation.dispatch(
-                  CommonActions.reset({
-                    index: 0,
-                    routes: [{ name: "Settings" }],
-                  })
-                );
-                navigation.dispatch(CommonActions.goBack());
-              }}
-            />
-          ),
-          headerTitle: () => (
-            <HeaderTitle isLeftVisible children="Ustawienia profilu" />
-          ),
-        });
-      }
-
-      return () => {};
-    }, [navigation])
-  );
+  useHeaderOptions(navigation, {
+    title: "Ustawienia profilu",
+    headerLeftConfig: {
+      canGoBack: navigation.canGoBack(),
+      goBackAction: () => {
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{ name: "Settings" }],
+          })
+        );
+        navigation.dispatch(CommonActions.goBack());
+      },
+    },
+  });
 
   const {
     handleSubmit,

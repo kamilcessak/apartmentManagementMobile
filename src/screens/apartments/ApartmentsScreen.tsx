@@ -8,17 +8,14 @@ import {
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useQuery } from "@tanstack/react-query";
 
-import { HeaderTitle } from "@navigation/header";
 import { handleGetApartments } from "@services/apartments";
 import { ErrorScreen, LoadingScreen } from "@screens/common";
 import { AddIcon, EmptyList } from "@components/common";
 import { IconButton, useTheme, Text } from "react-native-paper";
 import { useToastNotification } from "@hooks/useToastNotification";
 import { StackNavigationProp } from "@react-navigation/stack";
-import {
-  ApartmentsStackNavigatorParamList,
-  MainNavigationPropType,
-} from "@typings/navigation.types";
+import { ApartmentsStackNavigatorParamList } from "@typings/navigation.types";
+import useHeaderOptions from "@hooks/useHeaderOptions";
 
 type NavigationPropType = StackNavigationProp<
   ApartmentsStackNavigatorParamList,
@@ -32,6 +29,10 @@ export const ApartmentsScreen = () => {
   const theme = useTheme();
   const { showNotification } = useToastNotification();
 
+  useHeaderOptions(navigation, {
+    title: "Twoje apartamenty",
+  });
+
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["apartments", "list"],
     queryFn: handleGetApartments,
@@ -39,25 +40,8 @@ export const ApartmentsScreen = () => {
 
   useFocusEffect(
     useCallback(() => {
-      let parent: MainNavigationPropType | null =
-        navigation as MainNavigationPropType;
-      while (parent && "getParent" in parent) {
-        const newParent = parent.getParent();
-        if (!newParent) break;
-        parent = newParent as MainNavigationPropType;
-      }
-
-      if (parent) {
-        parent.setOptions({
-          headerLeft: () => null,
-          headerTitle: () => <HeaderTitle children="Twoje apartamenty" />,
-        });
-      }
-
       refetch();
-
-      return () => {};
-    }, [navigation])
+    }, [])
   );
 
   const onRefresh = () => {

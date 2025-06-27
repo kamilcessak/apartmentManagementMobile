@@ -1,22 +1,15 @@
 import { ScrollView, View } from "react-native";
-import {
-  RouteProp,
-  useFocusEffect,
-  useNavigation,
-} from "@react-navigation/native";
-import { FC, useCallback } from "react";
+import { RouteProp, useNavigation } from "@react-navigation/native";
+import { FC } from "react";
 import { useTheme } from "react-native-paper";
 
-import { HeaderLeft, HeaderTitle } from "@navigation/header";
 import { useQuery } from "@tanstack/react-query";
 import { handleGetApartment } from "@services/apartments";
 import { ErrorScreen, LoadingScreen } from "@screens/common";
 import { DescriptionSection } from "@components/common";
 import { StackNavigationProp } from "@react-navigation/stack";
-import {
-  ApartmentsStackNavigatorParamList,
-  MainNavigationPropType,
-} from "@typings/navigation.types";
+import { ApartmentsStackNavigatorParamList } from "@typings/navigation.types";
+import useHeaderOptions from "@hooks/useHeaderOptions";
 
 type NavigationPropType = StackNavigationProp<
   ApartmentsStackNavigatorParamList,
@@ -34,30 +27,13 @@ export const ApartmentDetailsScreen: FC<{ route: TenantDetailsScreenProps }> = (
   const navigation = useNavigation<NavigationPropType>();
   const theme = useTheme();
 
-  useFocusEffect(
-    useCallback(() => {
-      let parent: MainNavigationPropType | null =
-        navigation as MainNavigationPropType;
-      while (parent && "getParent" in parent) {
-        const newParent = parent.getParent();
-        if (!newParent) break;
-        parent = newParent as MainNavigationPropType;
-      }
-
-      if (parent) {
-        parent.setOptions({
-          headerLeft: () => (
-            <HeaderLeft canGoBack goBack={() => navigation.goBack()} />
-          ),
-          headerTitle: () => (
-            <HeaderTitle children="Szczegóły apartamentu" isLeftVisible />
-          ),
-        });
-      }
-
-      return () => {};
-    }, [navigation])
-  );
+  useHeaderOptions(navigation, {
+    title: "Szczegóły apartamentu",
+    headerLeftConfig: {
+      canGoBack: navigation.canGoBack(),
+      goBackAction: navigation.goBack,
+    },
+  });
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["apartments", "list"],
