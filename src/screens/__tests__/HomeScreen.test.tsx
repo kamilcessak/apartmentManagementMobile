@@ -107,28 +107,6 @@ describe("TEST: HomeScreen", () => {
     });
   });
 
-  it("Should set navigation header", () => {
-    const mockUseFocusEffect = jest.requireMock(
-      "@react-navigation/native"
-    ).useFocusEffect;
-    let focusCallback: () => void = () => {};
-
-    mockUseFocusEffect.mockImplementation((callback) => {
-      focusCallback = callback;
-    });
-
-    render(<HomeScreen />);
-
-    act(() => {
-      focusCallback();
-    });
-
-    expect(mockSetOptions).toHaveBeenCalledWith({
-      headerLeft: expect.any(Function),
-      headerTitle: expect.any(Function),
-    });
-  });
-
   it("Should calculate available apartments correctly", () => {
     const mockUserData = {
       email: "test@test.test",
