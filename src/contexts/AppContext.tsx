@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import { UserType } from "@types/user.types";
 
-type AppContextType = {
+export type AppContextType = {
   user: UserType | null;
   setUser: React.Dispatch<React.SetStateAction<UserType | null>>;
 };

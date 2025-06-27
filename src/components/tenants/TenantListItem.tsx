@@ -4,7 +4,7 @@ import { IconButton, Text } from "react-native-paper";
 import styled from "styled-components/native";
 import { useNavigation } from "@react-navigation/native";
 
-import { getRandomHexColor } from "@utils/generateRandomColor";
+import { getRandomRgbaColor } from "@utils/generateRandomColor";
 import { TenantType } from "@types/tenant.types";
 
 const Wrapper = styled.View`
@@ -40,7 +40,7 @@ export const TenantListItem: FC<Props> = ({
     <Wrapper>
       <AvatarWrapper
         style={{
-          backgroundColor: getRandomHexColor(),
+          backgroundColor: getRandomRgbaColor(),
         }}
       >
         <Text variant="headlineSmall">{`${firstName[0]}${lastName[0]}`}</Text>

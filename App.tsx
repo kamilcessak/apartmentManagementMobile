@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Provider as PaperProvider } from "react-native-paper";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Toast from "react-native-toast-message";
+import * as ScreenOrientation from "expo-screen-orientation";
 
 import { HeaderLeft, HeaderTitle, HeaderRight } from "@navigation/header";
 import { theme } from "@styles/theme";

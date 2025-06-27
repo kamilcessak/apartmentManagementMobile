@@ -62,6 +62,7 @@ export const HomeScreen = () => {
           }}
         >
           <Text
+            testID="welcomeMessage"
             style={{ color: "white", fontWeight: "800", textAlign: "center" }}
             variant="titleLarge"
           >{`Witaj ${data?.firstName ?? ""} w ApartmentManagement!`}</Text>
