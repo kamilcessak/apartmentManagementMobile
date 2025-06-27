@@ -13,15 +13,15 @@ import { SettingsStackNavigatorParamList } from "@typings/navigation.types";
 import useHeaderOptions from "@hooks/useHeaderOptions";
 import { useAppTheme } from "@hooks/useAppTheme";
 
-const schema = yup.object().shape({
-  firstName: yup.string(),
-  lastName: yup.string(),
-});
-
 type FormValues = {
   firstName?: string;
   lastName?: string;
 };
+
+const schema: yup.ObjectSchema<FormValues> = yup.object().shape({
+  firstName: yup.string(),
+  lastName: yup.string(),
+});
 
 type NavigationPropType = StackNavigationProp<
   SettingsStackNavigatorParamList,

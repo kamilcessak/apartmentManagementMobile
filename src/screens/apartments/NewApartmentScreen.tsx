@@ -19,17 +19,19 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { ApartmentsStackNavigatorParamList } from "@typings/navigation.types";
 import useHeaderOptions from "@hooks/useHeaderOptions";
 
-const schema = yup.object().shape({
-  address: yup.string().required("Address is required"),
-  metric: yup.number().required("Metric is required"),
-  roomCount: yup.number().required("Rooms count of your apartment is required"),
-  monthlyCost: yup
-    .number()
-    .required("Monthly cost of renting your apartment is required"),
-  description: yup.string().required("Description field is required"),
-  equipment: yup.string(),
-  documents: yup.array().of(yup.string()).notRequired(),
-  photos: yup.array().of(yup.string()).notRequired(),
+const schema: yup.ObjectSchema<CreateApartmentType> = yup.object().shape({
+  address: yup.string().defined().required("Address is required"),
+  metric: yup.number().defined().required("Metric is required"),
+  roomCount: yup.number().defined().required("Rooms count is required"),
+  monthlyCost: yup.number().defined().required("Monthly cost is required"),
+  description: yup.string().defined().required("Description is required"),
+  equipment: yup.string().optional().default(undefined),
+  documents: yup
+    .array()
+    .of(yup.string().defined())
+    .optional()
+    .default(undefined),
+  photos: yup.array().of(yup.string().defined()).optional().default(undefined),
 });
 
 type FormValues = CreateApartmentType;
@@ -68,6 +70,16 @@ export const NewApartmentScreen = () => {
     watch,
     formState: { errors },
   } = useForm<FormValues>({
+    defaultValues: {
+      address: "",
+      metric: 0,
+      roomCount: 0,
+      monthlyCost: 0,
+      description: "",
+      equipment: undefined,
+      documents: undefined,
+      photos: undefined,
+    },
     resolver: yupResolver(schema),
   });
 
