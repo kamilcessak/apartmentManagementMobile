@@ -26,6 +26,35 @@ Application base on Feature-based Clean Architecture.
    "@testing-library/react-native": "13.2.0", // For rendering tests
    ```
 
+## Run project instructions
+
+1. Install dependencies
+
+   ```bash
+   yarn
+   ```
+
+2. Install native packages
+
+   ```bash
+   yarn ios
+   ```
+
+   or
+   
+   ```bash
+   yarn android
+   ```
+
+3. Run project on expo:go
+
+4. Run tests (optionally)
+
+   ```bash
+   yarn test
+   ```
+
+
 In the output, you'll find options to open the app in a
 
 - [development build](https://docs.expo.dev/develop/development-builds/introduction/)
