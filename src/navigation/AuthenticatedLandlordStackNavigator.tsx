@@ -72,6 +72,7 @@ export const AuthenticatedLandlordStackNavigator = () => {
           tabBarIcon: ({ focused, size }) => (
             <IconButton icon="cog" size={size} iconColor={iconColor(focused)} />
           ),
+          tabBarLabel: "Settings",
         }}
       />
     </Tab.Navigator>
