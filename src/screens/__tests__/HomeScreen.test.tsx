@@ -6,10 +6,24 @@ import { act } from "@testing-library/react-hooks";
 
 import { HomeScreen } from "@screens/HomeScreen";
 import { useUserData } from "@hooks/useUserData";
+import { useAppContext } from "@contexts/AppContext";
+
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+
+const mockUseBottomTabBarHeight = useBottomTabBarHeight as jest.Mock;
+const mockUseAppContext = useAppContext as jest.Mock;
 
 jest.mock("@react-navigation/native", () => ({
   useNavigation: jest.fn(),
   useFocusEffect: jest.fn(),
+}));
+
+jest.mock("@contexts/AppContext", () => ({
+  useAppContext: jest.fn(),
+}));
+
+jest.mock("@react-navigation/bottom-tabs", () => ({
+  useBottomTabBarHeight: jest.fn(),
 }));
 
 jest.mock("react-native-paper", () => {
@@ -40,6 +54,12 @@ describe("TEST: HomeScreen", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+
+    mockUseAppContext.mockReturnValue({
+      setbottomTabHeight: jest.fn(),
+    });
+
+    mockUseBottomTabBarHeight.mockReturnValue(56);
 
     mockUseNavigation.mockReturnValue({
       navigate: mockNavigate,
