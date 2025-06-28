@@ -1,4 +1,4 @@
-import { ScrollView, View } from "react-native";
+import { KeyboardAvoidingView, ScrollView, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useMutation } from "@tanstack/react-query";
 import Toast from "react-native-toast-message";
@@ -105,7 +105,9 @@ export const SignInScreen = () => {
     });
 
   return (
-    <View style={{ flex: 1, backgroundColor: theme.colors.customBackground }}>
+    <KeyboardAvoidingView
+      style={{ flex: 1, backgroundColor: theme.colors.customBackground }}
+    >
       <ScrollView
         scrollEnabled={false}
         contentContainerStyle={{
@@ -137,6 +139,6 @@ export const SignInScreen = () => {
           {`Zaloguj się`}
         </Button>
       </ScrollView>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
