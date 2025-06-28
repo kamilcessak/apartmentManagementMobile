@@ -6,14 +6,14 @@ import { useAppTheme } from "@hooks/useAppTheme";
 import { DefaultTheme } from "@typings/styledTheme";
 
 const Wrapper = styled.View`
-  width: "48%";
+  width: 48%;
   margin-bottom: 16px;
   border-width: 1px;
   border-color: ${({ theme }: { theme: DefaultTheme }) =>
     theme.colors.grayTertiary};
   border-radius: 8px;
   padding: 8px;
-  align-items: "center";
+  align-items: center;
 `;
 
 const ButtonsWrapper = styled.View`
