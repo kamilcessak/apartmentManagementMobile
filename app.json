@@ -15,7 +15,14 @@
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ],
+      "package": "com.kamilcessak1.apartmentManagementMobile"
     },
     "web": {
       "bundler": "metro",
@@ -55,6 +62,12 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "81260a53-e4ed-46b3-9dc8-548888b9d61d"
+      }
     }
   }
 }
