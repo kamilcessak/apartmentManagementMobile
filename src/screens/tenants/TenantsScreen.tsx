@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { RefreshControl, ScrollView, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useQuery } from "@tanstack/react-query";
@@ -12,6 +12,8 @@ import { useToastNotification } from "@hooks/useToastNotification";
 import { TenantsStackNavigatorParamList } from "@typings/navigation.types";
 import useHeaderOptions from "@hooks/useHeaderOptions";
 import { useAppTheme } from "@hooks/useAppTheme";
+import { useTenantsContext } from "@contexts/TenantsContext";
+import { useOfflineMode } from "@hooks/useOfflineMode";
 
 type NavigationPropType = StackNavigationProp<
   TenantsStackNavigatorParamList,
@@ -24,15 +26,21 @@ export const TenantsScreen = () => {
   const { showNotification } = useToastNotification();
   const navigation = useNavigation<NavigationPropType>();
   const theme = useAppTheme();
+  const { tenants, setTenants } = useTenantsContext();
+  const { isOffline } = useOfflineMode();
 
   useHeaderOptions(navigation, {
     title: "Twoi najemcy",
   });
 
-  const { data, isLoading, isError, refetch } = useQuery({
+  const { data, isLoading, isSuccess, isError, refetch } = useQuery({
     queryFn: handleGetTenants,
     queryKey: ["tenants", "list"],
   });
+
+  useEffect(() => {
+    setTenants(data || []);
+  }, [isSuccess]);
 
   const onRefresh = () => {
     try {
@@ -45,6 +53,14 @@ export const TenantsScreen = () => {
       setisRefreshing(false);
     }
   };
+
+  const resultData = useMemo(() => {
+    if (isOffline) {
+      return tenants;
+    } else {
+      return data;
+    }
+  }, [isOffline, data, tenants]);
 
   if (isLoading) {
     return <LoadingScreen />;
@@ -61,14 +77,14 @@ export const TenantsScreen = () => {
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.customBackground }}>
-      {data?.length ? (
+      {resultData?.length ? (
         <ScrollView
           refreshControl={
             <RefreshControl onRefresh={onRefresh} refreshing={isRefreshing} />
           }
           contentContainerStyle={{ padding: 16, gap: 16 }}
         >
-          {data?.map((e, i) => (
+          {resultData?.map((e, i) => (
             <TenantListItem {...e} key={`tenant-${e._id}-${i}`} />
           ))}
         </ScrollView>

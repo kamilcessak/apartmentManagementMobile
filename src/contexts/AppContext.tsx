@@ -9,17 +9,22 @@ import { UserType } from "@typings/user.types";
 
 export type AppContextType = {
   user: UserType | null;
+  bottomTabHeight: number | null;
   setUser: React.Dispatch<React.SetStateAction<UserType | null>>;
+  setbottomTabHeight: React.Dispatch<React.SetStateAction<number | null>>;
 };
 
 export const AppContext = createContext<AppContextType | null>(null);
 
 export const AppProvider: FC<PropsWithChildren> = ({ children }) => {
   const [user, setUser] = useState<UserType | null>(null);
+  const [bottomTabHeight, setbottomTabHeight] = useState<number | null>(null);
 
   const value = {
     user,
     setUser,
+    bottomTabHeight,
+    setbottomTabHeight,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

@@ -1,13 +1,15 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { View, ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { Text, Button, Icon } from "react-native-paper";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
 import { useUserData } from "@hooks/useUserData";
 import { LandlordStackParamList } from "@typings/navigation.types";
 import useHeaderOptions from "@hooks/useHeaderOptions";
 import { useAppTheme } from "@hooks/useAppTheme";
+import { useAppContext } from "@contexts/AppContext";
 
 type NavigationPropType = StackNavigationProp<LandlordStackParamList, "Home">;
 
@@ -15,6 +17,12 @@ export const HomeScreen = () => {
   const navigation = useNavigation<NavigationPropType>();
   const theme = useAppTheme();
   const { data } = useUserData();
+  const bottomTabHeight = useBottomTabBarHeight();
+  const { setbottomTabHeight } = useAppContext();
+
+  useEffect(() => {
+    setbottomTabHeight(bottomTabHeight);
+  }, [bottomTabHeight]);
 
   useHeaderOptions(navigation, {
     title: "Strona główna",

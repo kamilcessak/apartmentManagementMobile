@@ -16,11 +16,14 @@ import {
 import { AppProvider } from "src/contexts/AppContext";
 import { styledTheme } from "@typings/styledTheme";
 import { RootStackParamList } from "@typings/navigation.types";
+import { useOfflineMode } from "@hooks/index";
+import { OfflineView } from "@components/common";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const queryClient = new QueryClient();
 
 export default function App() {
+  const { isOffline } = useOfflineMode();
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={styledTheme}>
@@ -49,6 +52,7 @@ export default function App() {
                 />
               </Stack.Navigator>
             </NavigationContainer>
+            {isOffline ? <OfflineView /> : null}
             <Toast />
           </AppProvider>
         </PaperProvider>

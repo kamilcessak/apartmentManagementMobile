@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { RefreshControl, ScrollView, View } from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useQuery } from "@tanstack/react-query";
@@ -12,6 +12,8 @@ import { ApartmentsStackNavigatorParamList } from "@typings/navigation.types";
 import useHeaderOptions from "@hooks/useHeaderOptions";
 import { useAppTheme } from "@hooks/useAppTheme";
 import { ApartmentListItem } from "@components/apartments";
+import { useApartmentsContext } from "@contexts/ApartmentsContext";
+import { useOfflineMode } from "@hooks/useOfflineMode";
 
 type NavigationPropType = StackNavigationProp<
   ApartmentsStackNavigatorParamList,
@@ -24,12 +26,14 @@ export const ApartmentsScreen = () => {
   const navigation = useNavigation<NavigationPropType>();
   const theme = useAppTheme();
   const { showNotification } = useToastNotification();
+  const { apartments, setApartments } = useApartmentsContext();
+  const { isOffline } = useOfflineMode();
 
   useHeaderOptions(navigation, {
     title: "Twoje apartamenty",
   });
 
-  const { data, isLoading, isError, refetch } = useQuery({
+  const { data, isLoading, isError, refetch, isSuccess } = useQuery({
     queryKey: ["apartments", "list"],
     queryFn: handleGetApartments,
   });
@@ -39,6 +43,10 @@ export const ApartmentsScreen = () => {
       refetch();
     }, [])
   );
+
+  useEffect(() => {
+    setApartments(data || []);
+  }, [isSuccess]);
 
   const onRefresh = () => {
     try {
@@ -51,6 +59,14 @@ export const ApartmentsScreen = () => {
       setisRefreshing(false);
     }
   };
+
+  const resultData = useMemo(() => {
+    if (isOffline) {
+      return apartments;
+    } else {
+      return data;
+    }
+  }, [isOffline, data, apartments]);
 
   if (isLoading) {
     return <LoadingScreen />;
@@ -67,14 +83,14 @@ export const ApartmentsScreen = () => {
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.customBackground }}>
-      {data?.length ? (
+      {resultData?.length ? (
         <ScrollView
           contentContainerStyle={{ padding: 16, gap: 16 }}
           refreshControl={
             <RefreshControl onRefresh={onRefresh} refreshing={isRefreshing} />
           }
         >
-          {data.map(({ address, isAvailable, _id: id }, i) => (
+          {resultData.map(({ address, isAvailable, _id: id }, i) => (
             <ApartmentListItem
               key={`apartment-item-${id}-${i}`}
               address={address}
