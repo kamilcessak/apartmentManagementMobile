@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
-import { RefreshControl, ScrollView, View } from "react-native";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { RefreshControl, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useQuery } from "@tanstack/react-query";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { FlashList } from "@shopify/flash-list";
 
 import { handleGetTenants } from "@services/tenants";
 import { TenantListItem } from "@components/tenants";
@@ -14,6 +15,7 @@ import useHeaderOptions from "@hooks/useHeaderOptions";
 import { useAppTheme } from "@hooks/useAppTheme";
 import { useTenantsContext } from "@contexts/TenantsContext";
 import { useOfflineMode } from "@hooks/useOfflineMode";
+import { TenantType } from "@typings/tenant.types";
 
 type NavigationPropType = StackNavigationProp<
   TenantsStackNavigatorParamList,
@@ -62,6 +64,11 @@ export const TenantsScreen = () => {
     }
   }, [isOffline, data, tenants]);
 
+  const renderItem = useCallback(
+    ({ item }: { item: TenantType }) => <TenantListItem {...item} />,
+    []
+  );
+
   if (isLoading) {
     return <LoadingScreen />;
   }
@@ -78,16 +85,17 @@ export const TenantsScreen = () => {
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.customBackground }}>
       {resultData?.length ? (
-        <ScrollView
+        <FlashList
+          data={resultData}
+          contentContainerStyle={{ padding: 16 }}
+          estimatedItemSize={118}
           refreshControl={
             <RefreshControl onRefresh={onRefresh} refreshing={isRefreshing} />
           }
-          contentContainerStyle={{ padding: 16, gap: 16 }}
-        >
-          {resultData?.map((e, i) => (
-            <TenantListItem {...e} key={`tenant-${e._id}-${i}`} />
-          ))}
-        </ScrollView>
+          keyExtractor={({ _id: id }, i) => `tenant-item-${id}-${i}`}
+          ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
+          renderItem={renderItem}
+        />
       ) : (
         <EmptyList message={"Brak wynajmujących"} />
       )}

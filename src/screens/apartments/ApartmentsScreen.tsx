@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { RefreshControl, ScrollView, View } from "react-native";
+import { RefreshControl, View } from "react-native";
+import { FlashList } from "@shopify/flash-list";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useQuery } from "@tanstack/react-query";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -14,6 +15,7 @@ import { useAppTheme } from "@hooks/useAppTheme";
 import { ApartmentListItem } from "@components/apartments";
 import { useApartmentsContext } from "@contexts/ApartmentsContext";
 import { useOfflineMode } from "@hooks/useOfflineMode";
+import { ApartmentType } from "@typings/apartment.types";
 
 type NavigationPropType = StackNavigationProp<
   ApartmentsStackNavigatorParamList,
@@ -68,6 +70,17 @@ export const ApartmentsScreen = () => {
     }
   }, [isOffline, data, apartments]);
 
+  const renderItem = useCallback(
+    ({ item: { address, isAvailable, _id: id } }: { item: ApartmentType }) => (
+      <ApartmentListItem
+        address={address}
+        isAvailable={isAvailable}
+        onPress={() => navigation.navigate("ApartmentDetails", { id })}
+      />
+    ),
+    []
+  );
+
   if (isLoading) {
     return <LoadingScreen />;
   }
@@ -84,21 +97,17 @@ export const ApartmentsScreen = () => {
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.customBackground }}>
       {resultData?.length ? (
-        <ScrollView
-          contentContainerStyle={{ padding: 16, gap: 16 }}
+        <FlashList
+          data={resultData}
+          contentContainerStyle={{ padding: 16 }}
+          estimatedItemSize={118}
           refreshControl={
             <RefreshControl onRefresh={onRefresh} refreshing={isRefreshing} />
           }
-        >
-          {resultData.map(({ address, isAvailable, _id: id }, i) => (
-            <ApartmentListItem
-              key={`apartment-item-${id}-${i}`}
-              address={address}
-              isAvailable={isAvailable}
-              onPress={() => navigation.navigate("ApartmentDetails", { id })}
-            />
-          ))}
-        </ScrollView>
+          keyExtractor={({ _id: id }, i) => `apartment-item-${id}-${i}`}
+          ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
+          renderItem={renderItem}
+        />
       ) : (
         <EmptyList message="Brak apartamentów" />
       )}
